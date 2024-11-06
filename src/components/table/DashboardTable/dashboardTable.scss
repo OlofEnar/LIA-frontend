@@ -1,0 +1,60 @@
+@import "../../../assets/styles/variables.scss";
+@import "../../../assets/styles/responsive.scss";
+
+.tableContainer {
+    border: 1px solid $grey;
+    border-radius: $border-radius;
+    overflow: hidden;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid $grey;
+        }
+
+        th {
+            text-transform: uppercase;
+
+            svg {
+                margin-left: 10px;
+            }
+        }
+
+        tr:last-child {
+            td {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+h3 {
+    padding-bottom: 1em;
+}
+
+.tableFooter {
+    padding-top: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+
+        button {
+            margin: 0 2px 0 2px;
+            background-color: transparent;
+            border-radius: 5px;
+            border: 1px solid $grey;
+
+            .paginationIcons {
+                width: 20px;
+                height: 20px;
+                margin: 5px;
+            }
+        }
+
+}
