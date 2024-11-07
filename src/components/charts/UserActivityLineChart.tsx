@@ -17,10 +17,10 @@ const UserActivityLineChart = () => {
 
    userEvents?.forEach((userEvent) => {
     const { date, eventCount } = userEvent;
-    const test = chartData.findIndex(e => e.date === date);
+    const index = chartData.findIndex(e => e.date === date);
 
-    if (test > -1) {
-       chartData[test].eventTotal += eventCount;
+    if (index > -1) {
+       chartData[index].eventTotal += eventCount;
     } else {      
        chartData.push({ date: date, eventTotal: eventCount})
     }
