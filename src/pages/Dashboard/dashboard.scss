@@ -1,0 +1,24 @@
+@import '../../assets/styles/variables.scss';
+@import '../../assets/styles/responsive.scss';
+
+.dashboard {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(140px, auto);
+
+    @include xl {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include sm {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .grid-item {
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
