@@ -2,8 +2,6 @@ import "./dashboard.scss"
 import { ArrowDown, ArrowUp, Activity } from 'lucide-react';
 import { DisplayDashboardTable } from "../../components/DisplayDashboardTable";
 import UserActivityLineChart from "../../components/charts/UserActivityLineChart";
-import EventsBarChart from "../../components/charts/EventsBarChart";
-
 
 const Dashboard = () => {
     return (

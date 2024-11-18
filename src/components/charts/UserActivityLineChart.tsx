@@ -1,20 +1,25 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getEventsByUserId } from '../../services/api';
-import { useQuery } from "react-query";
+import { useQuery } from 'react-query';
 import { AggregatedEventData, UserEvent } from '../../types/types';
+import getDateRangeArray from '../../utils/getDateRangeArray';
+import { useDateRangeStore } from '../../store';
 
 const userId = "e51718cd-8af1-4045-9ed7-31c7022ecbc3"
 
 const UserActivityLineChart = () => {
+  const { selectedRange } = useDateRangeStore();
+  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
+  console.log(selectedDates);
+
   const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
     queryKey: ['userEvents', userId], 
     queryFn: () => getEventsByUserId(userId),    
   });
 
-  console.dir(userEvents)
-
    const chartData: AggregatedEventData[] = [];
-
+   const filteredChartData: AggregatedEventData[] = [];
+   
    userEvents?.forEach((userEvent) => {
     const { date, eventCount } = userEvent;
     const index = chartData.findIndex(e => e.date === date);
@@ -26,14 +31,19 @@ const UserActivityLineChart = () => {
     }
   });
 
-   console.log(chartData)
+   selectedDates.forEach((date) => {
+    const event = chartData.find((event) => event.date === date);
+    if (event) {
+      filteredChartData.push(event)
+    } 
+   });
   
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
 
     return (
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData}>
+        <LineChart data={filteredChartData}>
         <XAxis
               dataKey="date"
               tickLine={false}
