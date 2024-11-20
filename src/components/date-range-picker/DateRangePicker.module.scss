@@ -58,19 +58,7 @@ input {
         }
     }
 
-    .SeparatorRoot {
-        margin: 15px 0;
-        background-color: variables.$grey;
-    }
 
-    .SeparatorRoot[data-orientation="horizontal"] {
-        height: 1px;
-        width: 100%;
-    }
-    .SeparatorRoot[data-orientation="vertical"] {
-        height: 100%;
-        width: 1px;
-    }
 
     .PopoverClose {
         border-radius: 100%;

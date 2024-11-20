@@ -83,7 +83,6 @@ const DateRangePicker = () => {
     };
 
 return (
-    <>
         <Popover.Root open={calendarOpen} onOpenChange={setCalendarOpen}>
 		<Popover.Trigger asChild>
             <div className={styles.inputContainer}>
@@ -110,7 +109,7 @@ return (
                     onSelect={handleRangeChange}
                     className={styles.datePicker}
                 />
-                <Separator.Root className={styles.SeparatorRoot} />
+                <Separator.Root className="SeparatorRoot" />
                 <div className={styles.calendarFooter}>
                     <div className={styles.datePresets}>
                         <button className={styles.datePreset} onClick={() => handlePresetSelection('last7days')}>Last 7 days</button>
@@ -125,7 +124,6 @@ return (
 			</Popover.Content>
 		</Popover.Portal>
 	</Popover.Root>
-    </>
 );
 };
 export default DateRangePicker;

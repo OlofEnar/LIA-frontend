@@ -1,0 +1,31 @@
+@use '../../assets/styles/variables';
+@use '../../assets/styles/responsive';
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+
+    .link {
+        text-decoration: none;
+        color: black;
+        position: relative;
+        margin-right: 1rem;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background-color: variables.$grey;
+                transform: scaleX(1);
+                transform-origin: center;
+                transition: transform 0.3s ease;
+            }
+
+        &.active::after {
+            width: 100%;
+        }
+    }    
+}

@@ -1,8 +1,25 @@
+@use '../../assets/styles/variables.scss';
+@use '../../assets/styles/responsive.scss';
 
 header {
     width: 100%;
     height: 80px;
     display: flex;
-    justify-content: right;
-    padding: 20px 20px 0 0;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 0 20px;
+
+    // Workaround. The popup calendar was rendering an empty div
+    // which is used to position the calendar for some reason and
+    // breaking the header layout. 
+    > div:empty { 
+        position: absolute;
+        top: 85px;
+        right: 20px;
+        }    
+
+
+    // @include responsive.md {
+    //     > div:empty {} // fix for mobile later
+    // }
 }

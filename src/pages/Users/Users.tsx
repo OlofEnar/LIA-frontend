@@ -5,7 +5,6 @@ import "./users.scss"
 const Users = () => {
     return (
         <>
-        <div>Users</div>
         <DisplayUsersTable />
         </>
     );
