@@ -17,6 +17,13 @@ export const getAllUsersWithEvents = async (): Promise<User[]> => {
     return response.data;
 };
 
+export const getUser = async (userId: string): Promise<User> => {
+    const response = await axios.get(`${API_URL}/users/${userId}`);
+    console.log(response);
+    
+    return response.data;
+};
+
 export const getEventsByUserId = async (userId: string ): Promise<UserEvent[]> => {
     const response = await axios.get(`${API_URL}/users/${userId}/events`);
     

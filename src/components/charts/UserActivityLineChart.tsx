@@ -1,20 +1,21 @@
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getEventsByUserId } from '../../services/api';
 import { useQuery } from 'react-query';
 import { AggregatedEventData, UserEvent } from '../../types/types';
 import getDateRangeArray from '../../utils/getDateRangeArray';
 import { useDateRangeStore } from '../../store';
 
-const userId = "e51718cd-8af1-4045-9ed7-31c7022ecbc3"
 
-const UserActivityLineChart = () => {
+const UserActivityLineChart = ({userId}: {userId:string}) => {
   const { selectedRange } = useDateRangeStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
   console.log(selectedDates);
+  console.log(userId)
 
   const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
     queryKey: ['userEvents', userId], 
-    queryFn: () => getEventsByUserId(userId),    
+    queryFn: () => getEventsByUserId(userId),
+    enabled: !!userId,    
   });
 
    const chartData: AggregatedEventData[] = [];
@@ -37,24 +38,30 @@ const UserActivityLineChart = () => {
       filteredChartData.push(event)
     } 
    });
+
+   filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+   console.log(filteredChartData);
   
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
 
     return (
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={filteredChartData}>
+      <ResponsiveContainer width="100%" maxHeight={400}>
+        <LineChart 
+        data={filteredChartData}
+        >
         <XAxis
               dataKey="date"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tickFormatter={(value) => value.slice(5)}
             />          
           <YAxis  />
           <Tooltip />
           <CartesianGrid vertical={false} />
-          <Legend />
           <Line
+              animationDuration={200}
               dataKey="eventTotal"
               type="natural"
               stroke="#EC7862"

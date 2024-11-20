@@ -16,5 +16,4 @@ export const DisplayUsersTable = () => {
         <DataTable columns={userColumns} data={data} />
         </>
     )
-
 }

@@ -1,9 +1,14 @@
 import { getEvents } from "../../services/api"
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AggregatedEventData, UserEvent } from '../../types/types';
 import { useQuery } from 'react-query';
+import { useDateRangeStore } from "../../store";
+import getDateRangeArray from "../../utils/getDateRangeArray";
 
 const EventsBarChart = () => {
+  const { selectedRange } = useDateRangeStore();
+  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
+
   const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
     queryKey: ['userEvents'], 
     queryFn: () => getEvents(),    
@@ -12,6 +17,8 @@ const EventsBarChart = () => {
   console.dir(userEvents)
 
   const chartData: AggregatedEventData[] = [];
+  const filteredChartData: AggregatedEventData[] = [];
+
 
   userEvents?.forEach((userEvent) => {
    const { date, eventCount, eventName } = userEvent;
@@ -22,17 +29,24 @@ const EventsBarChart = () => {
    } else {      
       chartData.push({ date: date, eventTotal: eventCount, eventName: eventName})
    }
+  });
+
+ selectedDates.forEach((date) => {
+  const event = chartData.find((event) => event.date === date);
+  if (event) {
+    filteredChartData.push(event)
+  } 
  });
+
+ filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
 
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" maxHeight={400}>
         <BarChart
-          width={500}
-          height={300}
-          data={chartData}
+          data={filteredChartData}
           margin={{
             top: 5,
             right: 30,
@@ -40,11 +54,26 @@ const EventsBarChart = () => {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
+          <CartesianGrid vertical={false} />
+          <XAxis 
+          dataKey="date"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(date) => {
+            const parsedDate = new Date(date);
+            let lastMonth = "";
+            const currentMonth = parsedDate.toLocaleString("default", {month: "short"});
+            
+            if (currentMonth !== lastMonth) {
+              lastMonth = currentMonth;
+              return currentMonth;
+            }
+            return "";
+          }}
+          />
           <YAxis />
           <Tooltip />
-          <Legend />
           <Bar dataKey="eventTotal" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
         </BarChart>
       </ResponsiveContainer>

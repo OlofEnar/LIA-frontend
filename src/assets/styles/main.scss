@@ -49,8 +49,12 @@ a {
     padding: 20px;
 }
 
-.container {
-    display: flex;
+.grid-item {
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 .shadow {
@@ -102,4 +106,18 @@ a {
     &:focus {
       color: darken(variables.$clr-primary, $amount: 20%);
     }
+}
+
+.SeparatorRoot {
+    margin: 15px 0;
+    background-color: variables.$grey;
+}
+
+.SeparatorRoot[data-orientation="horizontal"] {
+    height: 1px;
+    width: 100%;
+}
+.SeparatorRoot[data-orientation="vertical"] {
+    height: 100%;
+    width: 1px;
 }
