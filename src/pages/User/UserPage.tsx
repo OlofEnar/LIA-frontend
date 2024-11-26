@@ -40,7 +40,7 @@ const UserPage = () => {
                 <div className="label">Events summary</div>
                 <Settings size={22} strokeWidth={1.5}/>
             </div>
-            <UserEventsPieChart userId={id}/>            
+            <UserEventsPieChart userId={id}/>
         </div>
         <div className="grid-item box-landscape shadow">
             <div className={styles.cardHeader}>

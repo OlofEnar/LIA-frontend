@@ -7,18 +7,17 @@ import { UserEvent, AggregatedEventData } from "../../../types/types";
 import styles from "./UserEventsPieChart.module.scss"
 
 const UserEventsPieChart = ({userId}: {userId:string}) => {
+let totalEvents: number = 0;
 const { selectedRange } = useDateRangeStore();
 const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
-let totalEvents: number = 0;
+const chartData: AggregatedEventData[] = [];
+const eventNames: UserEvent[] = [];
 
 const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
-    queryKey: ['userEvents', userId], 
+    queryKey: ['pieEvents', userId], 
     queryFn: () => getEventsByUserId(userId),
     enabled: !!userId,    
   });
-
-  const chartData: AggregatedEventData[] = [];
-  const filteredChartData: AggregatedEventData[] = [];
   
   userEvents?.forEach((userEvent) => {
     const { date, eventCount } = userEvent;
@@ -44,14 +43,29 @@ const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({
   selectedDates.forEach((date) => {
    const event = chartData.find((event) => event.date === date);
    totalEvents += event?.eventTotal || 0;
-   console.log(totalEvents);
    if (event) {
-     filteredChartData.push(event)
+     event.events.forEach((item) => eventNames.push(item))
    } 
   });
 
+const filteredChartData = Array.from(eventNames.reduce((map, cur) => {
+  const name = cur.eventName;
+  
+  if (map.has(name)) {
+    console.log(`Found existing event: ${name}, adding count: ${cur.eventCount}`);
+    const existingEvent = map.get(name);
+    existingEvent.eventCount += cur.eventCount;
+    console.log(`Updated event count for ${name}: ${existingEvent.eventCount}`);
+  } else {
+    console.log(`Adding new event: ${name} with count: ${cur.eventCount}`);
+    map.set(name, { ...cur });
+  }
+  
+  return map;
+}, new Map()).values());
 
-  console.log(filteredChartData);
+console.log('Final output:', filteredChartData);
+
  
  if (isLoading) {return <div>Loading...</div> }
  if (isError) { return <div>An error occured {error.message}</div> }
@@ -62,7 +76,7 @@ return (
           <Tooltip />
             <Pie
               data={filteredChartData}
-              dataKey="eventTotal"
+              dataKey="eventCount"
               nameKey="eventName"
               innerRadius={60}
               strokeWidth={5}

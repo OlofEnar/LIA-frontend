@@ -41,7 +41,6 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
       });
     }
   });
-  console.log(chartData);
 
    selectedDates.forEach((date) => {
     const event = chartData.find((event) => event.date === date);
