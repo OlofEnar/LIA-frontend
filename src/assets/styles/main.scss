@@ -49,12 +49,10 @@ a {
     padding: 20px;
 }
 
-.grid-item {
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .shadow {

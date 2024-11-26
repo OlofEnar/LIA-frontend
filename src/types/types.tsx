@@ -18,5 +18,11 @@ export interface UserEvent {
 export interface AggregatedEventData {
         date: string;
         eventTotal: number;
-        eventName?: string;
+        events: Array<EventNames>;
+}
+
+export interface EventNames {
+    eventName: string;
+    eventCount: number;
+    date: string;
 }
