@@ -1,0 +1,16 @@
+@use '../../../assets/styles/variables';
+@use '../../../assets/styles/responsive';
+
+.container {
+    font-size: 0.85rem;
+    padding: 1rem;
+    width: 240px;
+    background-color: white;
+    border: 1px solid variables.$grey;
+    border-radius: 10px;
+
+    .details {
+        display: flex;
+        justify-content: space-between;
+    }
+}

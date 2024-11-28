@@ -3,11 +3,12 @@ import { getEventsByUserId } from '../../services/api';
 import { useQuery } from 'react-query';
 import { AggregatedEventData, UserEvent } from '../../types/types';
 import getDateRangeArray from '../../utils/getDateRangeArray';
-import { useDateRangeStore } from '../../store';
-
+import { useDateRangeStore, useCsvStore } from '../../store';
+import CustomTooltip from './custom-tooltip/CustomTooltip';
 
 const UserActivityLineChart = ({userId}: {userId:string}) => {
   const { selectedRange } = useDateRangeStore();
+  const { setCsvData } = useCsvStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
   console.log(selectedDates);
   console.log(userId)
@@ -20,15 +21,25 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
 
    const chartData: AggregatedEventData[] = [];
    const filteredChartData: AggregatedEventData[] = [];
-   
+
    userEvents?.forEach((userEvent) => {
     const { date, eventCount } = userEvent;
     const index = chartData.findIndex(e => e.date === date);
 
     if (index > -1) {
        chartData[index].eventTotal += eventCount;
-    } else {      
-       chartData.push({ date: date, eventTotal: eventCount})
+       chartData[index].events.push(userEvent);
+
+    } else {
+      const eventArray: UserEvent[] = [];      
+      eventArray.push(userEvent);
+      console.log(eventArray)
+
+      chartData.push({
+          date: date,
+          eventTotal: eventCount,
+          events: eventArray,
+      });
     }
   });
 
@@ -41,15 +52,23 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
 
    filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
    console.log(filteredChartData);
-  
+
+   const eventsToExport: UserEvent[] = [];
+   filteredChartData.forEach((group) => {
+    group.events.forEach(event => {
+      eventsToExport.push(event);
+    });
+   });
+   console.log(eventsToExport);
+   setCsvData(eventsToExport);
+   
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
 
+
     return (
       <ResponsiveContainer width="100%" maxHeight={400}>
-        <LineChart 
-        data={filteredChartData}
-        >
+        <LineChart data={filteredChartData}>
         <XAxis
               dataKey="date"
               tickLine={false}
@@ -58,10 +77,10 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
               tickFormatter={(value) => value.slice(5)}
             />          
           <YAxis  />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />}/>
           <CartesianGrid vertical={false} />
           <Line
-              animationDuration={200}
+              animationDuration={400}
               dataKey="eventTotal"
               type="natural"
               stroke="#EC7862"

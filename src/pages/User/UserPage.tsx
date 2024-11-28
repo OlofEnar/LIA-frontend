@@ -6,10 +6,11 @@ import { getUser } from "../../services/api";
 import { useQuery } from "react-query";
 import { User } from "../../types/types";
 import { Settings } from "lucide-react";
+import UserEventsPieChart from "../../components/charts/user-event-pie-chart/UserEventsPieChart";
 
 const UserPage = () => {
     const { id } = useParams<{ id: string }>();
-    
+
     const { data: user, error, isError, isLoading, } = useQuery<User>({ 
         queryKey: ['user', id], 
         queryFn: () => getUser(id),
@@ -35,12 +36,18 @@ const UserPage = () => {
             </div>
         </div>
         <div className="grid-item box-portrait shadow">
+            <div className={styles.cardHeader}>
+                <div className="label">Events summary</div>
+                <Settings size={22} strokeWidth={1.5}/>
+            </div>
+            <UserEventsPieChart userId={id}/>
+            <p>[ Add Top 3 here ]</p>
         </div>
         <div className="grid-item box-landscape shadow">
             <div className={styles.cardHeader}>
                 <div className="label">User activity</div>
                 <Settings size={22} strokeWidth={1.5}/>
-                </div>
+            </div>
             <UserActivityLineChart userId={id}/>
         </div>
     </div>

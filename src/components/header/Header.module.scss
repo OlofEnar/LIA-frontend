@@ -18,8 +18,16 @@ header {
         right: 20px;
         }    
 
-
     // @include responsive.md {
     //     > div:empty {} // fix for mobile later
     // }
+
+    .headerRight {
+        display: flex;
+        align-items: center;
+
+        div {
+            margin-left: 1rem;
+        }
+    }
 }

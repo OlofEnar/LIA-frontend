@@ -2,8 +2,33 @@ import { ColumnDef } from "@tanstack/react-table"
 import { User } from "../../types/types"
 import { ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import React, { HTMLProps } from "react";
 
 export const userColumns: ColumnDef<User>[] = [
+    {
+        id: 'select',
+        header: ({ table }) => (
+            <IndeterminateCheckbox
+            {...{
+                checked: table.getIsAllRowsSelected(),
+                indeterminate: table.getIsSomeRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+            />
+        ),
+        cell: ({ row }) => (
+            <div className="px-1">
+            <IndeterminateCheckbox
+                {...{
+                checked: row.getIsSelected(),
+                disabled: !row.getCanSelect(),
+                indeterminate: row.getIsSomeSelected(),
+                onChange: row.getToggleSelectedHandler(),
+                }}
+            />
+            </div>
+        ),
+    },
     { 
         id: 'link', 
         accessorKey: 'actions', 
@@ -24,6 +49,27 @@ export const userColumns: ColumnDef<User>[] = [
 
     },
     { accessorKey: 'score', header: 'Score'},
-    { accessorKey: 'dailyEvents', header: 'Daily Events'},
-    { accessorKey: 'mostUsedDailyEvent', header: 'Most used'},
 ];
+
+function IndeterminateCheckbox({
+    indeterminate,
+    className = '',
+    ...rest
+  }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+    const ref = React.useRef<HTMLInputElement>(null!)
+  
+    React.useEffect(() => {
+      if (typeof indeterminate === 'boolean') {
+        ref.current.indeterminate = !rest.checked && indeterminate
+      }
+    }, [ref, indeterminate])
+  
+    return (
+      <input
+        type="checkbox"
+        ref={ref}
+        className={className + ' cursor-pointer'}
+        {...rest}
+      />
+    )
+  }

@@ -12,7 +12,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 type Preset = 'last7days' | 'last14days' | 'last30days';
 
 const DateRangePicker = () => {
-    const { selectedRange,setSelectedRange } = useDateRangeStore();
+    const { selectedRange, setSelectedRange } = useDateRangeStore();
     const [showPicker, setShowPicker] = useState<boolean>(false);
     const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
