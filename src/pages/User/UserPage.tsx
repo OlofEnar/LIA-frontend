@@ -10,7 +10,7 @@ import UserEventsPieChart from "../../components/charts/user-event-pie-chart/Use
 
 const UserPage = () => {
     const { id } = useParams<{ id: string }>();
-    
+
     const { data: user, error, isError, isLoading, } = useQuery<User>({ 
         queryKey: ['user', id], 
         queryFn: () => getUser(id),
@@ -41,12 +41,13 @@ const UserPage = () => {
                 <Settings size={22} strokeWidth={1.5}/>
             </div>
             <UserEventsPieChart userId={id}/>
+            <p>[ Add Top 3 here ]</p>
         </div>
         <div className="grid-item box-landscape shadow">
             <div className={styles.cardHeader}>
                 <div className="label">User activity</div>
                 <Settings size={22} strokeWidth={1.5}/>
-                </div>
+            </div>
             <UserActivityLineChart userId={id}/>
         </div>
     </div>

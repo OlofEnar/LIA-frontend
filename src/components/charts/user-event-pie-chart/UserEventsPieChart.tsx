@@ -59,8 +59,7 @@ const filteredChartData = Array.from(eventNames.reduce((map, cur) => {
   } else {
     console.log(`Adding new event: ${name} with count: ${cur.eventCount}`);
     map.set(name, { ...cur });
-  }
-  
+  }  
   return map;
 }, new Map()).values());
 

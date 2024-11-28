@@ -17,12 +17,15 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]    
 }
+
+
     
 export function DataTable<TData, TValue>({
 columns,
 data,
 }: DataTableProps<TData, TValue>) {
 
+const [rowSelection, setRowSelection] = useState({});
 const [sorting, setSorting] = useState<SortingState>([]);
 const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -32,6 +35,8 @@ const [pagination, setPagination] = useState<PaginationState>({
 const table = useReactTable({
     data,
     columns,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -40,6 +45,7 @@ const table = useReactTable({
     state: {
         sorting,
         pagination,
+        rowSelection,
     },           
     });
 
@@ -92,10 +98,10 @@ const table = useReactTable({
                 </table>
             </div>
             <div className="tableFooter">
-            <div>
-                Showing {table.getRowModel().rows.length.toLocaleString()} of{' '}
-                {table.getRowCount().toLocaleString()} Rows
-            </div>
+                <div>
+                    Showing {table.getRowModel().rows.length.toLocaleString()} of{' '}
+                    {table.getRowCount().toLocaleString()} Rows
+                </div>
                 <div className="pageSize">
                     <span>Show</span>
                     <select className="shadow buttonStyle"
@@ -124,32 +130,36 @@ const table = useReactTable({
                             disabled={!table.getCanPreviousPage()}
                             >
                             {<ChevronsLeft className="paginationIcons" strokeWidth={1}/>}
-                            </button>
-                            <button
+                        </button>
+                        <button
                             className="pagination shadow buttonStyle"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
                             >
                             {<ChevronLeft className="paginationIcons" strokeWidth={1}/>}
-                            </button>
-                            <button
+                        </button>
+                        <button
                             className="pagination shadow buttonStyle"
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage()}
                             >
                             {<ChevronRight className="paginationIcons" strokeWidth={1}/>}
-                            </button>
-                            <button
+                        </button>
+                        <button
                             className="pagination shadow buttonStyle"
                             onClick={() => table.lastPage()}
                             disabled={!table.getCanNextPage()}
                             >
                             {<ChevronsRight className="paginationIcons" strokeWidth={1}/>}
-                            </button>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
+            <div>
+                <label>Row Selection State:</label>
+                <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
+            </div>
+        </div>
     );
 };
 export default DataTable 

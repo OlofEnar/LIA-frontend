@@ -3,11 +3,12 @@ import { getEventsByUserId } from '../../services/api';
 import { useQuery } from 'react-query';
 import { AggregatedEventData, UserEvent } from '../../types/types';
 import getDateRangeArray from '../../utils/getDateRangeArray';
-import { useDateRangeStore } from '../../store';
+import { useDateRangeStore, useCsvStore } from '../../store';
 import CustomTooltip from './custom-tooltip/CustomTooltip';
 
 const UserActivityLineChart = ({userId}: {userId:string}) => {
   const { selectedRange } = useDateRangeStore();
+  const { setCsvData } = useCsvStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
   console.log(selectedDates);
   console.log(userId)
@@ -51,10 +52,19 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
 
    filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
    console.log(filteredChartData);
-  
 
+   const eventsToExport: UserEvent[] = [];
+   filteredChartData.forEach((group) => {
+    group.events.forEach(event => {
+      eventsToExport.push(event);
+    });
+   });
+   console.log(eventsToExport);
+   setCsvData(eventsToExport);
+   
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
+
 
     return (
       <ResponsiveContainer width="100%" maxHeight={400}>
