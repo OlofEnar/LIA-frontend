@@ -3,7 +3,7 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Respons
 import { AggregatedEventData, UserEvent } from '../../types/types';
 import { useQuery } from 'react-query';
 import { useDateRangeStore } from "../../store";
-import getDateRangeArray from "../../utils/getDateRangeArray";
+import { getDateRangeArray } from "../../utils/utils";
 
 const EventsBarChart = () => {
   const { selectedRange } = useDateRangeStore();
