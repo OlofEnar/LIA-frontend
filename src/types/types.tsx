@@ -26,3 +26,8 @@ export interface EventNames {
     eventCount: number;
     date?: string;
 }
+
+export interface DownloadJSONProps {
+    data: Array<Record<string, any>>;
+    fileName: string;
+  }

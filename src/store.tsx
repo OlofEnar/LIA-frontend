@@ -2,8 +2,8 @@ import dayjs from "dayjs";
 import { create } from "zustand"
  
 interface CsvStore {
-    csvData: Array<Record<string, any>>;
-    setCsvData: (newData: Array<Record<string, any>>) => void;
+    exportData: Array<Record<string, any>>;
+    setExportData: (newData: Array<Record<string, any>>) => void;
 }
 
 interface DateRangeStore {
@@ -29,12 +29,12 @@ export const useDateRangeStore = create<DateRangeStore>((set) => ({
 }));
 
 export const useCsvStore = create<CsvStore>((set) => ({
-    csvData: [],
-    setCsvData: (newData) => 
+    exportData: [],
+    setExportData: (newData) => 
         set((state) => {
-            if (JSON.stringify(state.csvData) === JSON.stringify(newData)) {
+            if (JSON.stringify(state.exportData) === JSON.stringify(newData)) {
                 return state;
             }
-            return {csvData: newData};
+            return {exportData: newData};
         }),
 }));
