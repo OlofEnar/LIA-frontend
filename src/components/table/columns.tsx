@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { User } from "../../types/types"
+import { User, UserEvent } from "../../types/types"
 import { ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { HTMLProps } from "react";
@@ -49,6 +49,54 @@ export const userColumns: ColumnDef<User>[] = [
 
     },
     { accessorKey: 'score', header: 'Score'},
+];
+
+export const eventColumns: ColumnDef<UserEvent>[] = [
+  {
+      id: 'select',
+      header: ({ table }) => (
+          <IndeterminateCheckbox
+          {...{
+              checked: table.getIsAllRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+          }}
+          />
+      ),
+      cell: ({ row }) => (
+          <div className="px-1">
+          <IndeterminateCheckbox
+              {...{
+              checked: row.getIsSelected(),
+              disabled: !row.getCanSelect(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler(),
+              }}
+          />
+          </div>
+      ),
+  },
+  { 
+      id: 'link', 
+      accessorKey: 'actions', 
+      header: 'Actions',
+      cell: ({ row }) => {
+          const navigate = useNavigate();
+          
+          return <button onClick={() => navigate(`/events/${row.original.eventName}`)}
+          style={{background : 'none', border: 'none', cursor: 'pointer'}}>
+          <ExternalLink size={15}/>
+          </button>
+      },
+  },
+  // { 
+  //     accessorKey: 'id',
+  //     header: 'ID',
+  //     cell: (info) => (info.getValue() as string).slice(0,4),
+
+  // },
+  { accessorKey: 'eventName', header: 'Event'},
+  { accessorKey: 'eventCount', header: 'Count'},
 ];
 
 function IndeterminateCheckbox({

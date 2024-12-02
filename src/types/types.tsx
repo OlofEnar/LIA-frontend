@@ -24,5 +24,5 @@ export interface AggregatedEventData {
 export interface EventNames {
     eventName: string;
     eventCount: number;
-    date: string;
+    date?: string;
 }
