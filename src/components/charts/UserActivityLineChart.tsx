@@ -1,14 +1,14 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getEventsByUserId } from '../../services/api';
 import { useQuery } from 'react-query';
-import { AggregatedEventData, UserEvent } from '../../types/types';
-import getDateRangeArray from '../../utils/getDateRangeArray';
+import { AggregatedEventData, EventNames, UserEvent } from '../../types/types';
 import { useDateRangeStore, useCsvStore } from '../../store';
 import CustomTooltip from './custom-tooltip/CustomTooltip';
+import { getDateRangeArray } from '../../utils/utils';
 
 const UserActivityLineChart = ({userId}: {userId:string}) => {
   const { selectedRange } = useDateRangeStore();
-  const { setCsvData } = useCsvStore();
+  const { setExportData } = useCsvStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
   console.log(selectedDates);
   console.log(userId)
@@ -53,14 +53,13 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
    filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
    console.log(filteredChartData);
 
-   const eventsToExport: UserEvent[] = [];
+   const eventsToExport: EventNames[] = [];
    filteredChartData.forEach((group) => {
     group.events.forEach(event => {
       eventsToExport.push(event);
     });
    });
-   console.log(eventsToExport);
-   setCsvData(eventsToExport);
+   setExportData(eventsToExport);
    
   if (isLoading) {return <div>Loading...</div> }
   if (isError) { return <div>An error occured {error.message}</div> }
@@ -77,7 +76,7 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
               tickFormatter={(value) => value.slice(5)}
             />          
           <YAxis  />
-          <Tooltip content={<CustomTooltip />}/>
+          <Tooltip content={<CustomTooltip active={undefined} payload={undefined} label={undefined} />}/>
           <CartesianGrid vertical={false} />
           <Line
               animationDuration={400}

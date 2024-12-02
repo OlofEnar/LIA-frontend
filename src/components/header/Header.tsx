@@ -1,5 +1,5 @@
 import DateRangePicker from "../date-range-picker/DateRangePicker";
-import { ExportButton } from "../export-button/ExportButton";
+import ExportMenu from "../export-menu/ExportMenu";
 import Navbar from "../navbar/Navbar";
 import styles from "./Header.module.scss"
 
@@ -9,7 +9,7 @@ const Header = () => {
         <header className={styles.header}>
             <Navbar />
             <div className={styles.headerRight}>
-                <ExportButton />
+                <ExportMenu />
                 <DateRangePicker />
             </div>
         </header>
