@@ -9,7 +9,7 @@ const Header = () => {
         <header className={styles.header}>
             <Navbar />
             <div className={styles.headerRight}>
-                <ExportMenu />
+                {/* <ExportMenu /> */}
                 <DateRangePicker />
             </div>
         </header>

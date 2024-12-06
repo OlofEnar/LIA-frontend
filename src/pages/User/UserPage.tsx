@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { User } from "../../types/types";
 import { Settings } from "lucide-react";
 import UserEventsPieChart from "../../components/charts/user-event-pie-chart/UserEventsPieChart";
+import { getLatestUserActivity } from "../../utils/utils";
 
 const UserPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -16,6 +17,8 @@ const UserPage = () => {
         queryFn: () => getUser(id),
         enabled: !!id,    
       });
+      const latestActivity: string = getLatestUserActivity(user?.events);
+      console.log(latestActivity);
 
     if (isLoading) {return <div>Loading...</div> }
     if (isError) { return <div>An error occured {error.message}</div> }
@@ -31,7 +34,7 @@ const UserPage = () => {
             <div className={styles.cardDetails}>
             <p><strong>Id:</strong> {user?.id.toString().slice(0,4)}</p>
             <p><strong>Score: </strong>{user?.score}</p>
-            <p><strong>Last active: </strong>Yesterday</p>
+            <p><strong>Last active: </strong>{latestActivity}</p>
             <p><strong>Total events: </strong>34298</p>
             </div>
         </div>

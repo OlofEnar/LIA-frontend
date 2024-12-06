@@ -5,9 +5,8 @@ import './assets/styles/main.scss'
 import './assets/styles/normalize.css'
 import Header from './components/header/Header'
 import UserPage from './pages/User/UserPage'
-import EventPage from './pages/Event/EventPage'
 import Events from './pages/Events/Events'
-
+import EventPage from './pages/Event/EventPage'
 
 function App() {
   const Layout = () => {
@@ -31,7 +30,7 @@ function App() {
             <Route path='/users' element={<Users />} />
             <Route path='/users/:id' element={<UserPage />} />
             <Route path='/events' element={<Events />} />
-            <Route path='/events/:eventName' element={<EventPage />} />
+            <Route path='/events/:selectedEventName' element={<EventPage />} />
           </Route>
         </Routes>
       </Router>

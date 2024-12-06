@@ -1,10 +1,11 @@
 @use '../../assets/styles/variables';
 
 .inputContainer {
-    width: 200px;
+    width: 203px;
     position: relative;
     display: flex;
     align-items: center;
+    margin-left: 1rem;
     
     .inputField {
         width: 100%;
@@ -24,6 +25,8 @@
 }
 
 .popoverContent {
+    top: 45px;
+    position: relative;
     z-Index:10;
     background-color: white;
     padding: 1rem;
@@ -47,8 +50,6 @@
             padding: 0 0.5rem;
         }
     }
-
-
 
     .PopoverClose {
         border-radius: 100%;

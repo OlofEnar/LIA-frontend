@@ -14,8 +14,6 @@ const EventsBarChart = () => {
     queryFn: () => getEvents(),    
   });
   
-  console.dir(userEvents)
-
   const chartData: AggregatedEventData[] = [];
   const filteredChartData: AggregatedEventData[] = [];
 
@@ -60,17 +58,7 @@ const EventsBarChart = () => {
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(date) => {
-            const parsedDate = new Date(date);
-            let lastMonth = "";
-            const currentMonth = parsedDate.toLocaleString("default", {month: "short"});
-            
-            if (currentMonth !== lastMonth) {
-              lastMonth = currentMonth;
-              return currentMonth;
-            }
-            return "";
-          }}
+          tickFormatter={(value) => value.slice(5)}
           />
           <YAxis />
           <Tooltip />

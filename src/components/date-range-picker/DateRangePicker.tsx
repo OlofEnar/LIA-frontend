@@ -8,7 +8,7 @@ import { CalendarDays } from 'lucide-react';
 import { useDateRangeStore } from "../../store";
 import * as Separator from "@radix-ui/react-separator";
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+const DATE_FORMAT = 'YYYY/MM/DD';
 type Preset = 'last7days' | 'last14days' | 'last30days';
 
 const DateRangePicker = () => {
@@ -19,7 +19,7 @@ const DateRangePicker = () => {
     const [tempRange, setTempRange] = useState<DateRange>();
 
     useEffect(() => {
-        handlePresetSelection('last7days');
+        handlePresetSelection('last30days');
     }, []);
     
     const handleRangeChange = (range: DateRange | undefined) => {

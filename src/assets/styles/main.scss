@@ -119,3 +119,27 @@ a {
     height: 100%;
     width: 1px;
 }
+
+.inputContainer {
+    width: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    
+    .inputField {
+        width: 100%;
+        padding: 1rem 1rem 1rem 2.5rem ;
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px solid variables.$grey;
+        font-size: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+    }
+
+    .icon {
+        position: absolute;
+        left: 1rem;
+        pointer-events: none; 
+    }
+}

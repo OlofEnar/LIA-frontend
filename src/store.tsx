@@ -1,6 +1,11 @@
 import dayjs from "dayjs";
 import { create } from "zustand"
- 
+
+interface UserCountStore {
+    userCount: number;
+    setUserCount: (count: number) => void;
+}
+
 interface CsvStore {
     exportData: Array<Record<string, any>>;
     setExportData: (newData: Array<Record<string, any>>) => void;
@@ -19,9 +24,14 @@ type DateRange = {
 // defaults to last 7 days
 const today = dayjs();
 const defaultRange: DateRange = {
-    from: today.subtract(6, 'day').toDate(),
+    from: today.subtract(29, 'day').toDate(),
     to: today.toDate(),
 };
+
+export const useUserCountStore = create<UserCountStore>((set) => ({
+    userCount: 0,
+    setUserCount: (userCount) => set(() => ({userCount: userCount}))
+}));
 
 export const useDateRangeStore = create<DateRangeStore>((set) => ({
     selectedRange: defaultRange,

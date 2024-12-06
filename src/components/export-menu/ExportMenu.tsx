@@ -1,10 +1,10 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import styles from "./exportMenu.module.scss";
-import { Braces, Columns3, Download } from "lucide-react";
+import { Braces, Columns3, Download, File } from "lucide-react";
 import dayjs from "dayjs";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import { useCsvStore, useDateRangeStore } from "../../store";
-import { downloadJSON } from "../../utils/utils";
+import { downloadJSON, exportJsonToBrowser } from "../../utils/utils";
 
 const ExportMenu = () => {
 	const { exportData } = useCsvStore();
@@ -40,6 +40,11 @@ const ExportMenu = () => {
 					</DropdownMenu.Item>
 					<DropdownMenu.Item className={styles.Item} onClick={() => downloadJSON({data: exportData, fileName})}>
 					Export as JSON <div className={styles.RightSlot} >
+					<File strokeWidth={1.5} size={14} className={styles.icon} />
+							</div>
+					</DropdownMenu.Item>
+					<DropdownMenu.Item className={styles.Item} onClick={() => exportJsonToBrowser({data: exportData})}>
+					Open JSON in browser <div className={styles.RightSlot} >
 					<Braces strokeWidth={1.5} size={14} className={styles.icon} />
 							</div>
 					</DropdownMenu.Item>

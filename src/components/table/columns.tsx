@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { User, UserEvent } from "../../types/types"
+import { EventNames, User } from "../../types/types"
 import { ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { HTMLProps } from "react";
@@ -51,7 +51,7 @@ export const userColumns: ColumnDef<User>[] = [
     { accessorKey: 'score', header: 'Score'},
 ];
 
-export const eventColumns: ColumnDef<UserEvent>[] = [
+export const eventColumns: ColumnDef<EventNames>[] = [
   {
       id: 'select',
       header: ({ table }) => (
