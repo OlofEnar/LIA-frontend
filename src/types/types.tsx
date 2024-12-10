@@ -18,13 +18,13 @@ export interface UserEvent {
 export interface AggregatedEventData {
         date: string;
         eventTotal: number;
-        events: Array<EventNames>;
+        events?: Array<EventNames>;
 }
 
 export interface EventNames {
     eventName: string;
     eventCount: number;
-    date: string;
+    date?: string;
 }
 
 export interface DownloadJSONProps {

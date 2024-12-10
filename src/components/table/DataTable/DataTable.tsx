@@ -6,20 +6,19 @@ import {
     SortingState,
     getPaginationRowModel, 
     getSortedRowModel,
-    PaginationState} from "@tanstack/react-table"
+    PaginationState,
+    getFilteredRowModel,
+    filterFns} from "@tanstack/react-table"
 import "../../../types/types"
 import "./dataTable.scss"
 import { useState } from "react";
-import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]    
 }
-
-
-    
+  
 export function DataTable<TData, TValue>({
 columns,
 data,
@@ -31,6 +30,14 @@ const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
 })
+const [searchValue, setSearchValue] = useState('');
+
+const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    table.setGlobalFilter(value);
+    console.log(value);
+  };
 
 const table = useReactTable({
     data,
@@ -42,22 +49,26 @@ const table = useReactTable({
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: filterFns.includesString,
     state: {
         sorting,
         pagination,
         rowSelection,
+        globalFilter: searchValue,
     },           
     });
 
-    
-// useEffect(() => {
-//     const order = sorting[0]?.desc ? "desc" : "asc";
-//     const sort = sorting[0]?.id ?? "id"; 
-// }, [sorting]
-// )
-
     return (
         <div>
+            <div className="inputContainer">
+                <Search strokeWidth={1.5} size={14} className="icon"/>
+                <input className="inputField"
+                value={searchValue}
+                onChange={handleInputChange}
+                placeholder="Search..."
+                />
+            </div>
             <div className="tableContainer">
                 <table>
                     <thead>

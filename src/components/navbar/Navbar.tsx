@@ -11,6 +11,7 @@ const Navbar = () => {
     const links: LinkItem[] = [
         { path: "/", label: "Home" },
         { path: "/users", label: "Users" },
+        { path: "/events", label: "Events" },
     ]
 
     return (
