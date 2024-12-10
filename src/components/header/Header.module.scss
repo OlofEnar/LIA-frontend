@@ -25,5 +25,13 @@ header {
     .headerRight {
         display: flex;
         align-items: center;
+
+        > * {
+            margin-left: 0.5rem;
+          }
+
+        svg {
+            cursor: pointer;
+        }
     }
 }

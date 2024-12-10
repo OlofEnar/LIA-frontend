@@ -1,6 +1,6 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import styles from "./exportMenu.module.scss";
-import { Braces, Columns3, Download, File } from "lucide-react";
+import { Braces, Columns3, File, Share2 } from "lucide-react";
 import dayjs from "dayjs";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import { useCsvStore, useDateRangeStore } from "../../store";
@@ -25,12 +25,7 @@ const ExportMenu = () => {
 	return (
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild>
-			<div className={styles.btnContainer}>
-                    <button className="btn btn-alt" type="button">
-                    Export
-                    </button>
-                    <Download color="#3c5b99" strokeWidth={1.5} size={14} className={styles.icon} />
-                </div> 
+				<Share2 size={22} strokeWidth={1.5}/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content className={styles.Content} sideOffset={5}>

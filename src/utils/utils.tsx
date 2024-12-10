@@ -67,3 +67,39 @@ export const getLatestEventActivity = (events: UserEvent[] = [], eventName: stri
 
   return `${latestEvent.date}`;
 };
+
+export function calcMovingAverage(data: { date: string; eventTotal: number }[], windowSize: number) {
+  const movingAverages: { date: string; movingAverage: number }[] = [];
+
+  for (let i = 0; i < data.length; i++) {
+      // Calculate the average for the available data points
+      const start = Math.max(0, i - windowSize + 1); // Adjust start for partial window
+      const windowData = data.slice(start, i + 1);
+      const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
+      const avg = sum / windowData.length; // Use available data length
+
+      movingAverages.push({ date: data[i].date, movingAverage: avg });
+  }
+
+  return movingAverages;
+}
+
+/* export function calcMovingAverage(data: { date: string; eventTotal: number }[], windowSize: number) {
+  const movingAverages: { date: string; movingAverage: number }[] = [];
+
+  for (let i = 0; i < data.length; i++) {
+      if (i < windowSize - 1) {
+          movingAverages.push({ date: data[i].date, movingAverage: null });
+          continue;
+      }
+
+      const windowData = data.slice(i - windowSize + 1, i + 1);
+      const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
+      const avg = sum / windowSize;
+
+      movingAverages.push({ date: data[i].date, movingAverage: avg });
+  }
+
+  return movingAverages;
+}
+ */

@@ -4,26 +4,29 @@ import dayjs from "dayjs";
 import * as Popover from "@radix-ui/react-popover";
 import "react-day-picker/dist/style.css";
 import styles from "./DateRangePicker.module.scss"
-import { CalendarDays } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useDateRangeStore } from "../../store";
 import * as Separator from "@radix-ui/react-separator";
 
 const DATE_FORMAT = 'YYYY/MM/DD';
-type Preset = 'last7days' | 'last14days' | 'last30days';
+type Preset = 'Last 7 days' | 'Last 14 days' | 'Last 30 days' | 'Custom';
+let selectedPreset: string = '';
 
 const DateRangePicker = () => {
     const { selectedRange, setSelectedRange } = useDateRangeStore();
     const [showPicker, setShowPicker] = useState<boolean>(false);
     const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
+    const [isPreset, setIsPreset] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
     const [tempRange, setTempRange] = useState<DateRange>();
 
     useEffect(() => {
-        handlePresetSelection('last30days');
+        handlePresetSelection('Last 30 days');
     }, []);
     
     const handleRangeChange = (range: DateRange | undefined) => {
         if (range) {
+            setIsPreset(false)
             setTempRange({from: range.from, to: range.to})
             setInputValue(
                 range.from && range.to
@@ -37,25 +40,30 @@ const DateRangePicker = () => {
         const today = dayjs();
         let fromDate: Date = today.toDate();
         let toDate: Date = today.toDate();
+        setIsPreset(true);
 
         switch (preset) {
-            case 'last7days':
+            case 'Last 7 days':
                 fromDate = today.subtract(6, 'day').toDate();
                 toDate = today.toDate();
+                selectedPreset = preset;
                 break;
             
-            case 'last14days':
+            case 'Last 14 days':
                 fromDate = today.subtract(13, 'day').toDate();
                 toDate = today.toDate();
+                selectedPreset = preset;
                 break;
 
-            case 'last30days':
+            case 'Last 30 days':
                 fromDate = today.subtract(29, 'day').toDate();
                 toDate = today.toDate();
+                selectedPreset = preset;
                 break;
             default:
                 break;
         }
+        console.log(selectedPreset);
 
         setTempRange({ from: fromDate, to: toDate });
         setInputValue(
@@ -75,18 +83,25 @@ const DateRangePicker = () => {
         setSelectedRange(tempRange);
         setCalendarOpen(false);
         console.log(tempRange);
+        if(!isPreset) {
+            selectedPreset = 'Custom';
+        }
     };
 
     const handleCancel = () => {
+        selectedPreset = '';
         setCalendarOpen(false);
         setSelectedRange(selectedRange); // Revert to initial range not working when cancelling
     };
 
 return (
+    <>
+    <div>{selectedPreset}</div>
+    <Separator.Root className="SeparatorRoot" orientation="vertical" />
         <Popover.Root open={calendarOpen} onOpenChange={setCalendarOpen}>
 		<Popover.Trigger asChild>
             <div className={styles.inputContainer}>
-                <CalendarDays strokeWidth={1.5} size={14} className={styles.icon}/>
+                <ChevronDown strokeWidth={1.5} size={14} className={styles.icon}/>
                 <input
                     type="text"
                     value={inputValue}
@@ -112,9 +127,9 @@ return (
                 <Separator.Root className="SeparatorRoot" />
                 <div className={styles.calendarFooter}>
                     <div className={styles.datePresets}>
-                        <button className={styles.datePreset} onClick={() => handlePresetSelection('last7days')}>Last 7 days</button>
-                        <button className={styles.datePreset} onClick={() => handlePresetSelection('last14days')}>Last 14 days</button>
-                        <button className={styles.datePreset} onClick={() => handlePresetSelection('last30days')}>Last 30 days</button>
+                        <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 7 days')}>Last 7 days</button>
+                        <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 14 days')}>Last 14 days</button>
+                        <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 30 days')}>Last 30 days</button>
                     </div>
                     <div>
                         <button className="btn btn-alt" onClick={handleCancel}>Cancel</button>
@@ -124,6 +139,7 @@ return (
 			</Popover.Content>
 		</Popover.Portal>
 	</Popover.Root>
+    </>
 );
 };
 export default DateRangePicker;

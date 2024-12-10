@@ -49,10 +49,11 @@ a {
     padding: 20px;
 }
 
-.card-header {
+.cardHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .shadow {
@@ -116,8 +117,9 @@ a {
     width: 100%;
 }
 .SeparatorRoot[data-orientation="vertical"] {
-    height: 100%;
-    width: 1px;
+    height: 40px;
+    width: 2px;
+    margin: 0 15px;
 }
 
 .inputContainer {

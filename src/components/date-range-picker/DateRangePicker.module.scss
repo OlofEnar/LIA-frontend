@@ -1,7 +1,7 @@
 @use '../../assets/styles/variables';
 
 .inputContainer {
-    width: 203px;
+    width: 210px;
     position: relative;
     display: flex;
     align-items: center;
@@ -9,17 +9,15 @@
     
     .inputField {
         width: 100%;
-        padding: 1rem 1rem 1rem 2.5rem ;
+        border: none;
         cursor: pointer;
-        border-radius: 5px;
-        border: 1px solid variables.$grey;
-        font-size: 0.75rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+        text-decoration-line: underline;
+        font-size: 1rem;
     }
 
     .icon {
         position: absolute;
-        left: 1rem;
+        right: 5px;
         pointer-events: none; 
     }
 }
