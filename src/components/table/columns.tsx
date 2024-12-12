@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { EventNames, User } from "../../types/types"
-import { ExternalLink } from 'lucide-react';
+import { User, UserEvent, UserEventTable } from "../../types/types"
+import { ExternalLink, FlagTriangleRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { HTMLProps } from "react";
 
@@ -49,9 +49,37 @@ export const userColumns: ColumnDef<User>[] = [
 
     },
     { accessorKey: 'score', header: 'Score'},
+/*     { 
+        id: 'trend', 
+        accessorKey: 'trend', 
+        header: 'Trend',
+        cell: ({ row }) => {            
+            return (
+                <TrendingDown size={15} color="red"/>
+            )                       
+        },
+    }, */
+    {
+        id: 'status',
+        accessorFn: (row) => {
+          const score = row.score;
+          if (score > 5) {
+            return 'green';
+          } else if (score > 2) {
+            return 'yellow';
+          }
+          return 'red';
+        },
+        header: 'Status',
+        cell: (info) => {
+          const status = info.getValue();
+          const color = status === 'green' ? 'green' : status === 'yellow' ? 'orange' : 'red';
+          return <FlagTriangleRight fill={color} size={15} color={color} />;
+        },
+      }
 ];
 
-export const eventColumns: ColumnDef<EventNames>[] = [
+export const eventColumns: ColumnDef<UserEvent>[] = [
   {
       id: 'select',
       header: ({ table }) => (
@@ -98,6 +126,36 @@ export const eventColumns: ColumnDef<EventNames>[] = [
   { accessorKey: 'eventName', header: 'Event'},
   { accessorKey: 'eventCount', header: 'Count'},
 ];
+
+export const userEventColumns = (totalEvents: number): ColumnDef<UserEventTable>[] => [
+    {
+        id: 'select',
+        header: ({ table }) => (
+            <IndeterminateCheckbox
+            {...{
+                checked: table.getIsAllRowsSelected(),
+                indeterminate: table.getIsSomeRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+            />
+        ),
+        cell: ({ row }) => (
+            <div className="px-1">
+            <IndeterminateCheckbox
+                {...{
+                checked: row.getIsSelected(),
+                disabled: !row.getCanSelect(),
+                indeterminate: row.getIsSomeSelected(),
+                onChange: row.getToggleSelectedHandler(),
+                }}
+            />
+            </div>
+        ),
+    },
+    { accessorKey: 'eventName',header: 'Event', footer: 'Total'},
+    { accessorKey: 'eventCount', header: 'Count', footer: () => totalEvents},
+    { accessorKey: 'eventDistribution', header: '%', footer: '100%'},
+  ];
 
 function IndeterminateCheckbox({
     indeterminate,

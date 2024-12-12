@@ -1,6 +1,11 @@
 @use '../../assets/styles/variables';
 @use '../../assets/styles/responsive';
 
+a {
+    all: unset;
+    cursor: pointer;
+}
+
 .single {
     display: grid;
     gap: 20px;

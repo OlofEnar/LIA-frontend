@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { getEventsByUserId } from '../../services/api';
 import { useQuery } from 'react-query';
-import { AggregatedEventData, EventNames, UserEvent } from '../../types/types';
+import { AggregatedEventData, UserEvent } from '../../types/types';
 import { useDateRangeStore, useCsvStore } from '../../store';
 import CustomTooltip from './custom-tooltip/CustomTooltip';
 import { calcMovingAverage, getDateRangeArray } from '../../utils/utils';
@@ -65,7 +65,7 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
     setWindowSize(Number(e.target.value));
   };
 
-  const eventsToExport: EventNames[] = [];
+  const eventsToExport: UserEvent[] = [];
   filteredChartData.forEach((group) => {
    group.events.forEach(event => {
      eventsToExport.push(event);

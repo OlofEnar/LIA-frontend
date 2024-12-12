@@ -1,30 +1,33 @@
 
+export type SignalColours = "green" | "yellow" | "red";
+
 export interface User {
     id: number;
     score: number;
-    dailyEvents: number;
-    mostUsedDailyEvent: string;
     totalEvents: number;
+    flag?: SignalColours; 
+    trend?: SignalColours;
     events: [];
 }
 
 export interface UserEvent {
-    id: number;
-    date: string;
+    id?: number;
+    date?: string;
     eventName: string;
     eventCount: number;
+    userId?: string;
 }
 
 export interface AggregatedEventData {
         date: string;
         eventTotal: number;
-        events?: Array<EventNames>;
+        events?: UserEvent[];
 }
 
-export interface EventNames {
-    eventName: string;
-    eventCount: number;
-    date?: string;
+export interface UserEventTable extends UserEvent {
+    eventDistribution?: string;
+    avgUserDistribution?: string;
+    avgUserEventCount?: number;
 }
 
 export interface DownloadJSONProps {

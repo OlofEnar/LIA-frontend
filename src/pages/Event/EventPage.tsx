@@ -1,5 +1,5 @@
 import * as Separator from "@radix-ui/react-separator";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "./eventpage.module.scss"
 import { Settings } from "lucide-react";
 import { useDateRangeStore, useUserCountStore } from "../../store";
@@ -21,7 +21,7 @@ const EventPage = () => {
       queryFn: () => getEvents(),    
     });
 
-    const latestActivity: string = getLatestEventActivity(userEvents,selectedEventName)
+    const latestActivity: UserEvent = getLatestEventActivity(userEvents, selectedEventName)
     let chartData: UserEvent[] = [];
     const eventMap = new Map();
     const uniqueUsers = new Set<string>();
@@ -66,7 +66,11 @@ const EventPage = () => {
             </div>
             <Separator.Root className="SeparatorRoot" />
             <div className={styles.cardDetails}>
-            <p><strong>Last logged: </strong>{latestActivity}</p>
+            <p><strong>Last logged: </strong>{latestActivity.date}</p>
+            <p>
+              <strong>By: </strong>
+              <Link to={`/users/${latestActivity.userId}`}>{latestActivity.userId}</Link>
+            </p>
             <p><strong>Total events: </strong>34298</p>
             </div>
         </div>
