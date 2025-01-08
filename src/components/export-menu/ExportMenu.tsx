@@ -22,6 +22,7 @@ const ExportMenu = () => {
         const csv = generateCsv(csvConfig)(exportData);
         download(csvConfig)(csv);
     };
+
 	return (
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild>
@@ -29,6 +30,10 @@ const ExportMenu = () => {
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content className={styles.Content} sideOffset={5}>
+				<DropdownMenu.Item className={styles.Item} onClick={handleExport}>
+					Export HUBSPOT <div className={styles.RightSlot}>
+						<Columns3  strokeWidth={1.5} size={14} className={styles.icon} /></div>
+				</DropdownMenu.Item>
 					<DropdownMenu.Item className={styles.Item} onClick={handleExport}>
 						Export as CSV <div className={styles.RightSlot}>
 							<Columns3  strokeWidth={1.5} size={14} className={styles.icon} /></div>

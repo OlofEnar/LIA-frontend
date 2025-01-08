@@ -2,25 +2,20 @@ import UserActivityLineChart from "../../components/charts/UserActivityLineChart
 import * as Separator from "@radix-ui/react-separator";
 import { useParams } from "react-router-dom";
 import styles from "./userpage.module.scss"
-import { getUser } from "../../services/api";
-import { useQuery } from "react-query";
-import { User } from "../../types/types";
 import { FlagTriangleRight, Settings2, } from "lucide-react";
 import { getLatestUserActivity } from "../../utils/utils";
 import { DisplayUserEventTable } from "../../components/DisplayUserEventsTable";
+import { useUserQuery } from "../../queries/useUserQueries";
 
 const UserPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string | any}>();
 
-    const { data: user, error, isError, isLoading, } = useQuery<User>({     
-        queryKey: ['user', id], 
-        queryFn: () => getUser(id),
-        enabled: !!id,    
-      });
-      const latestActivity: string = getLatestUserActivity(user?.events);
+    const { data: user, error, isError, isLoading, } = useUserQuery(id);
 
     if (isLoading) {return <div>Loading...</div> }
     if (isError) { return <div>An error occured {error.message}</div> }
+
+    const latestActivity: string | null = getLatestUserActivity(user?.events);
 
     return (
         <div className={styles.single}>

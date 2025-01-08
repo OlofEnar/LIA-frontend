@@ -24,6 +24,13 @@ export interface AggregatedEventData {
         events?: UserEvent[];
 }
 
+export interface EventDataForExport {
+    userId: string;
+    email: string;
+    totalEvents: number;
+    events?: UserEvent[];
+}
+
 export interface UserEventTable extends UserEvent {
     eventDistribution?: string;
     avgUserDistribution?: string;

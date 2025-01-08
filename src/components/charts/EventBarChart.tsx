@@ -1,7 +1,8 @@
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import styles from "./charts.module.scss"
+import { UserEvent } from '../../types/types';
 
-const EventBarChart = ({chartData}) => {
+const EventBarChart = ({chartData}: {chartData:UserEvent[]}) => {
   console.log(chartData);
 
     if(chartData.length < 3) {

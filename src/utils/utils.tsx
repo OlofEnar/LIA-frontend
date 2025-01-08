@@ -1,4 +1,4 @@
-import { DownloadJSONProps, UserEvent } from "../types/types";
+import { AggregatedEventData, DownloadJSONProps, UserEvent } from "../types/types";
 import dayjs from "dayjs";
     
 export const downloadJSON = ({ data, fileName }: DownloadJSONProps) => {
@@ -27,24 +27,29 @@ export const exportJsonToBrowser = (data: any): void => {
   window.open(url);
 };
   
-export function getDateRangeArray(startDate: Date, endDate: Date): string[] {
+export function getDateRangeArray(startDate: Date | null, endDate: Date | null): string[] {
+  if (!startDate || !endDate) {
+    return [];
+  }
   const datesArray: string[] = [];
   let currentDate = dayjs(startDate);
 
   while (currentDate.toDate() <= endDate) {
-      datesArray.push(currentDate.format('YYYY-MM-DD'));
-      currentDate = currentDate.add(1, 'day');
+    datesArray.push(currentDate.format('YYYY-MM-DD'));
+    currentDate = currentDate.add(1, 'day');
   }
   return datesArray;
-};  
+}
 
 export const getLatestUserActivity = (events: UserEvent[] = []): string | null => {
   if (events.length === 0) return null;
 
   const latestEvent = events.reduce((latest, current) => {
+    if (!latest.date || !current.date) return latest;
+  
     const latestDate = new Date(latest.date);
     const currentDate = new Date(current.date);
-
+  
     return currentDate > latestDate ? current : latest;
   });
 
@@ -58,10 +63,12 @@ export const getLatestEventActivity = (events: UserEvent[] = [], eventName: stri
 
   if (filteredEvents.length === 0) return null;
 
-  const latestEvent = filteredEvents.reduce((latest, current) => {
+  const latestEvent = events.reduce((latest, current) => {
+    if (!latest.date || !current.date) return latest;
+  
     const latestDate = new Date(latest.date);
     const currentDate = new Date(current.date);
-
+  
     return currentDate > latestDate ? current : latest;
   });
 
@@ -104,4 +111,24 @@ export function detectTrends(
 
     return { ...point, isUpwardTrend: isTrendUpward, isDownwardTrend: isTrendDownward };
   });
+}
+
+export const AggregateEvents = (userEvents: UserEvent[] = [], chartData: AggregatedEventData[] = []) => {
+  userEvents?.forEach((userEvent) => {
+    const { date, eventCount } = userEvent;
+    const index = chartData.findIndex(e => e.date === date);
+
+    if (index > -1) {
+        chartData[index].eventTotal += eventCount;
+        chartData[index].events = chartData[index].events ?? [];
+        chartData[index].events.push(userEvent);   
+      } else {
+        chartData.push({
+          date: date,
+          eventTotal: eventCount,
+          events: [userEvent], 
+        });
+    }
+  });
+  console.log(chartData)
 }

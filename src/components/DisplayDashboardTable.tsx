@@ -1,12 +1,10 @@
 'use client'
-import { useQuery } from "react-query";
-import {getUsers} from "../services/api"
 import { userColumns } from "./table/columns"
 import { DashboardTable } from "./table/DashboardTable/DashboardTable"
-import { User } from "../types/types";
+import { useUsersQuery } from "../queries/useUserQueries";
 
 export const DisplayDashboardTable = () => {
-    const { data = [], error, isError, isLoading, } = useQuery<User[]>({ queryKey: ['users'], queryFn: getUsers });
+    const { data = [], error, isError, isLoading, } = useUsersQuery();
 
     if (isLoading) {return <div>Loading...</div> }
     if (isError) { return <div>An error occured {error.message}</div> }
