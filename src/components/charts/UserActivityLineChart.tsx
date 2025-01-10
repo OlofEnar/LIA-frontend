@@ -1,80 +1,29 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
-import { getEventsByUserId } from '../../services/api';
-import { useQuery } from 'react-query';
-import { AggregatedEventData, EventNames, UserEvent } from '../../types/types';
-import { useDateRangeStore, useCsvStore } from '../../store';
 import CustomTooltip from './custom-tooltip/CustomTooltip';
-import { calcMovingAverage, getDateRangeArray } from '../../utils/utils';
 import OptionsModal from '../options-modal/OptionsModal';
 import { useState } from 'react';
+// import { useCsvStore } from '../../store';
+import { GetUserLineChartData } from '../../services/getUserLineChartData';
 
 const UserActivityLineChart = ({userId}: {userId:string}) => {
-  const { selectedRange } = useDateRangeStore();
-  const { setExportData } = useCsvStore();
+  // const { setExportData } = useCsvStore();
   const [ windowSize, setWindowSize ] = useState(14);
-  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
-  console.log(selectedDates);
-  console.log(userId)
-
-  const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
-    queryKey: ['userEvents', userId], 
-    queryFn: () => getEventsByUserId(userId),
-    enabled: !!userId,    
-  });
-
-   const chartData: AggregatedEventData[] = [];
-   const filteredChartData: AggregatedEventData[] = [];
-
-   userEvents?.forEach((userEvent) => {
-    const { date, eventCount } = userEvent;
-    const index = chartData.findIndex(e => e.date === date);
-
-    if (index > -1) {
-       chartData[index].eventTotal += eventCount;
-       chartData[index].events.push(userEvent);
-
-    } else {
-      const eventArray: UserEvent[] = [];      
-      eventArray.push(userEvent);
-
-      chartData.push({
-          date: date,
-          eventTotal: eventCount,
-          events: eventArray,
-      });
-    }
-  });
-
-   selectedDates.forEach((date) => {
-    const event = chartData.find((event) => event.date === date);
-    if (event) {
-      filteredChartData.push(event)
-    } 
-   });
-
-   filteredChartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-   const movingAverageData = calcMovingAverage(filteredChartData, windowSize);
-
-  // Merge MA & ChartData
-  const mergedChartData = filteredChartData.map((dataPoint, index) => ({
-    ...dataPoint,
-    movingAverage: movingAverageData[index]?.movingAverage
-  }));
 
   const handleWindowSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setWindowSize(Number(e.target.value));
+    console.log(windowSize);
   };
 
-  const eventsToExport: EventNames[] = [];
+/*   const eventsToExport: UserEvent[] = [];
   filteredChartData.forEach((group) => {
+   group.events = group.events ?? [];
    group.events.forEach(event => {
      eventsToExport.push(event);
    });
   });
   setExportData(eventsToExport);
-
-  if (isLoading) {return <div>Loading...</div> }
-  if (isError) { return <div>An error occured {error.message}</div> }
+*/
+  const chartData = GetUserLineChartData(userId, windowSize);
 
     return (
       <>
@@ -96,8 +45,8 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
       </div>
       <OptionsModal isGlobal={false} />
       </div>
-      <ResponsiveContainer width="100%" maxHeight={400}>
-        <LineChart data={mergedChartData}>
+      <ResponsiveContainer width="100%" maxHeight={300}>
+        <LineChart data={chartData}>
         <Legend
           iconType='circle'
           iconSize={6}

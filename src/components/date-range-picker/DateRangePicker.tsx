@@ -9,7 +9,7 @@ import { useDateRangeStore } from "../../store";
 import * as Separator from "@radix-ui/react-separator";
 
 const DATE_FORMAT = 'YYYY/MM/DD';
-type Preset = 'Last 7 days' | 'Last 14 days' | 'Last 30 days' | 'Custom';
+type Preset = 'Last 7 days' | 'Last 14 days' | 'Last 30 days' | 'Last 6 months' | 'Custom';
 let selectedPreset: string = '';
 
 const DateRangePicker = () => {
@@ -60,6 +60,13 @@ const DateRangePicker = () => {
                 toDate = today.toDate();
                 selectedPreset = preset;
                 break;
+
+            case 'Last 6 months':
+                fromDate = today.subtract(179, 'day').toDate();
+                toDate = today.toDate();
+                selectedPreset = preset;
+                break;
+
             default:
                 break;
         }
@@ -130,6 +137,7 @@ return (
                         <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 7 days')}>Last 7 days</button>
                         <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 14 days')}>Last 14 days</button>
                         <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 30 days')}>Last 30 days</button>
+                        <button className={styles.datePreset} onClick={() => handlePresetSelection('Last 6 months')}>Last 6 months</button>
                     </div>
                     <div>
                         <button className="btn btn-alt" onClick={handleCancel}>Cancel</button>

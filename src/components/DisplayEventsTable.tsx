@@ -1,24 +1,20 @@
 'use client'
 import { useMemo } from "react";
-import { useQuery } from "react-query";
-import { getEvents } from "../services/api";
 import { eventColumns } from "./table/columns";
-import { EventNames, UserEvent } from "../types/types";
+import { UserEvent } from "../types/types";
 import DataTable from "./table/DataTable/DataTable";
 import { useDateRangeStore } from "../store";
 import { getDateRangeArray } from "../utils/utils";
+import { useEventsQuery } from "../queries/useEventQueries";
 
 export const DisplayEventsTable = () => {
     const { selectedRange } = useDateRangeStore();
     const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
-    const { data: userEvents, error, isError, isLoading } = useQuery<UserEvent[]>({
-        queryKey: ['eventsTable'],
-        queryFn: getEvents
-    });
+    const { data: userEvents, error, isError, isLoading } = useEventsQuery();
 
     const filteredEventData = useMemo(() => {
         if (!userEvents) return [];
-        const eventData: EventNames[] = [];
+        const eventData: UserEvent[] = [];
 
         selectedDates.forEach((date) => {
             const events = userEvents.filter((event) => event.date === date);

@@ -1,4 +1,4 @@
-import { DownloadJSONProps, UserEvent } from "../types/types";
+import { AggregatedEventData, DownloadJSONProps, UserEvent } from "../types/types";
 import dayjs from "dayjs";
     
 export const downloadJSON = ({ data, fileName }: DownloadJSONProps) => {
@@ -27,56 +27,62 @@ export const exportJsonToBrowser = (data: any): void => {
   window.open(url);
 };
   
-export function getDateRangeArray(startDate: Date, endDate: Date): string[] {
+export function getDateRangeArray(startDate: Date | null, endDate: Date | null): string[] {
+  if (!startDate || !endDate) {
+    return [];
+  }
   const datesArray: string[] = [];
   let currentDate = dayjs(startDate);
 
   while (currentDate.toDate() <= endDate) {
-      datesArray.push(currentDate.format('YYYY-MM-DD'));
-      currentDate = currentDate.add(1, 'day');
+    datesArray.push(currentDate.format('YYYY-MM-DD'));
+    currentDate = currentDate.add(1, 'day');
   }
   return datesArray;
-};  
+}
 
 export const getLatestUserActivity = (events: UserEvent[] = []): string | null => {
   if (events.length === 0) return null;
 
   const latestEvent = events.reduce((latest, current) => {
+    if (!latest.date || !current.date) return latest;
+  
     const latestDate = new Date(latest.date);
     const currentDate = new Date(current.date);
-
+  
     return currentDate > latestDate ? current : latest;
   });
 
   return `${latestEvent.date} (${latestEvent.eventName})`;
 };
 
-export const getLatestEventActivity = (events: UserEvent[] = [], eventName: string): string | null => {
+export const getLatestEventActivity = (events: UserEvent[] = [], eventName: string): UserEvent | null => {
   if (events.length === 0) return null;
 
   const filteredEvents = events.filter(event => event.eventName === eventName);
 
   if (filteredEvents.length === 0) return null;
 
-  const latestEvent = filteredEvents.reduce((latest, current) => {
+  const latestEvent = events.reduce((latest, current) => {
+    if (!latest.date || !current.date) return latest;
+  
     const latestDate = new Date(latest.date);
     const currentDate = new Date(current.date);
-
+  
     return currentDate > latestDate ? current : latest;
   });
 
-  return `${latestEvent.date}`;
+  return latestEvent;
 };
 
 export function calcMovingAverage(data: { date: string; eventTotal: number }[], windowSize: number) {
   const movingAverages: { date: string; movingAverage: number }[] = [];
 
   for (let i = 0; i < data.length; i++) {
-      // Calculate the average for the available data points
-      const start = Math.max(0, i - windowSize + 1); // Adjust start for partial window
+      const start = Math.max(0, i - windowSize + 1); 
       const windowData = data.slice(start, i + 1);
       const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
-      const avg = sum / windowData.length; // Use available data length
+      const avg = sum / windowData.length; 
 
       movingAverages.push({ date: data[i].date, movingAverage: avg });
   }
@@ -84,22 +90,45 @@ export function calcMovingAverage(data: { date: string; eventTotal: number }[], 
   return movingAverages;
 }
 
-/* export function calcMovingAverage(data: { date: string; eventTotal: number }[], windowSize: number) {
-  const movingAverages: { date: string; movingAverage: number }[] = [];
+export function detectTrends(
+  data: { date: string; value: number }[],
+  windowSize: number
+) {
+  return data.map((point, index) => {
+    if (index < windowSize) {
+      return { ...point, isUpwardTrend: false, isDownwardTrend: false };
+    }
 
-  for (let i = 0; i < data.length; i++) {
-      if (i < windowSize - 1) {
-          movingAverages.push({ date: data[i].date, movingAverage: null });
-          continue;
-      }
+    const windowData = data.slice(index - windowSize, index + 1);
 
-      const windowData = data.slice(i - windowSize + 1, i + 1);
-      const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
-      const avg = sum / windowSize;
+    const isTrendUpward = windowData.every((_, i, arr) =>
+      i === 0 ? true : arr[i].value > arr[i - 1].value
+    );
 
-      movingAverages.push({ date: data[i].date, movingAverage: avg });
-  }
+    const isTrendDownward = windowData.every((_, i, arr) =>
+      i === 0 ? true : arr[i].value < arr[i - 1].value
+    );
 
-  return movingAverages;
+    return { ...point, isUpwardTrend: isTrendUpward, isDownwardTrend: isTrendDownward };
+  });
 }
- */
+
+export const AggregateEvents = (userEvents: UserEvent[] = [], chartData: AggregatedEventData[] = []) => {
+  userEvents?.forEach((userEvent) => {
+    const { date, eventCount } = userEvent;
+    const index = chartData.findIndex(e => e.date === date);
+
+    if (index > -1) {
+        chartData[index].eventTotal += eventCount;
+        chartData[index].events = chartData[index].events ?? [];
+        chartData[index].events.push(userEvent);   
+      } else {
+        chartData.push({
+          date: date,
+          eventTotal: eventCount,
+          events: [userEvent], 
+        });
+    }
+  });
+  console.log(chartData)
+}

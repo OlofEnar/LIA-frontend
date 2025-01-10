@@ -1,14 +1,13 @@
 import * as Separator from "@radix-ui/react-separator";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "./eventpage.module.scss"
 import { Settings } from "lucide-react";
 import { useDateRangeStore, useUserCountStore } from "../../store";
 import { useEffect } from "react";
-import { useQuery } from "react-query";
-import { getEvents } from "../../services/api";
 import { UserEvent } from "../../types/types";
 import { getDateRangeArray, getLatestEventActivity } from "../../utils/utils";
 import EventBarChart from "../../components/charts/EventBarChart";
+import { useEventsQuery } from "../../queries/useEventQueries";
 
 const EventPage = () => {
     const { selectedEventName } = useParams<{ selectedEventName: string }>();
@@ -16,15 +15,16 @@ const EventPage = () => {
     const { setUserCount } = useUserCountStore();
     const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to)
   
-    const { data: userEvents, error, isError, isLoading, } = useQuery<UserEvent[]>({ 
-      queryKey: ['userEvents'], 
-      queryFn: () => getEvents(),    
-    });
+    const { data: userEvents, error, isError, isLoading, } = useEventsQuery();
 
-    const latestActivity: string = getLatestEventActivity(userEvents,selectedEventName)
+    let latestActivity: UserEvent | null = null;
+    if (selectedEventName) {
+      latestActivity = getLatestEventActivity(userEvents, selectedEventName);
+    }
+    
     let chartData: UserEvent[] = [];
     const eventMap = new Map();
-    const uniqueUsers = new Set<string>();
+    const uniqueUsers = new Set<string | undefined>();
     let userCount: number = 0;
     
     userEvents?.forEach((userEvent) => {
@@ -37,7 +37,10 @@ const EventPage = () => {
         eventMap.set(key, { ...userEvent });
       }
     
-      if (eventName === selectedEventName && selectedDates.includes(date)) {
+      if (
+        eventName === selectedEventName &&
+        date && selectedDates.includes(date)
+      ) {
         uniqueUsers.add(userId);
       }
     });
@@ -48,8 +51,13 @@ const EventPage = () => {
     }).filter(event => event !== undefined);
 
     userCount = uniqueUsers.size;
-    chartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  
+
+    chartData.sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateA - dateB;
+    });
+
    useEffect(() => {
     setUserCount(userCount);
     console.log(`${userCount} unique users on ${selectedEventName}`);
@@ -66,7 +74,11 @@ const EventPage = () => {
             </div>
             <Separator.Root className="SeparatorRoot" />
             <div className={styles.cardDetails}>
-            <p><strong>Last logged: </strong>{latestActivity}</p>
+            <p><strong>Last logged: </strong>{latestActivity?.date}</p>
+            <p>
+              <strong>By: </strong>
+              <Link to={`/users/${latestActivity?.userId}`}>{latestActivity?.userId}</Link>
+            </p>
             <p><strong>Total events: </strong>34298</p>
             </div>
         </div>

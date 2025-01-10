@@ -7,7 +7,6 @@ type LinkItem = {
 };
 
 const Navbar = () => {
-
     const links: LinkItem[] = [
         { path: "/", label: "Home" },
         { path: "/users", label: "Users" },

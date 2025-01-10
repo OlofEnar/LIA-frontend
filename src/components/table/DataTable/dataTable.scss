@@ -17,12 +17,17 @@
             border-bottom: 1px solid variables.$grey;
         }
 
-        th {
+        th, tfoot {
             text-transform: uppercase;
 
             svg {
                 margin-left: 10px;
             }
+        }
+
+        tfoot {
+            border-top: 1px solid variables.$grey;
+            font-weight: bold;
         }
 
         tr:last-child {

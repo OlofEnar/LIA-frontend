@@ -16,12 +16,14 @@ import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRi
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
-    data: TData[]    
+    data: TData[]
+    showTotalFooter?: boolean
 }
   
 export function DataTable<TData, TValue>({
 columns,
 data,
+showTotalFooter = false,
 }: DataTableProps<TData, TValue>) {
 
 const [rowSelection, setRowSelection] = useState({});
@@ -106,6 +108,22 @@ const table = useReactTable({
                             </tr>
                         ))}
                     </tbody>
+                    {showTotalFooter && (
+                        <tfoot>
+                            {table.getFooterGroups().map((footerGroup) => (
+                                <tr key={footerGroup.id}>
+                                {footerGroup.headers.map((footer) => (
+                                    <td key={footer.id}>
+                                    {flexRender(
+                                        footer.column.columnDef.footer,
+                                        footer.getContext()
+                                    )}
+                                    </td>
+                                ))}
+                                </tr>
+                            ))}
+                        </tfoot>
+                    )}
                 </table>
             </div>
             <div className="tableFooter">
@@ -166,10 +184,10 @@ const table = useReactTable({
                     </div>
                 </div>
             </div>
-            <div>
+            {/* <div>
                 <label>Row Selection State:</label>
                 <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
-            </div>
+            </div> */}
         </div>
     );
 };
