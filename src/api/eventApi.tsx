@@ -1,5 +1,5 @@
 import { UserEvent } from "../types/types";
-import { api } from "./axios";
+import { api } from "./axiosClient";
 
 export const getEventsByUserId = async (userId: string ): Promise<UserEvent[]> => {
     const response = await api.get(`/users/${userId}/events`);
