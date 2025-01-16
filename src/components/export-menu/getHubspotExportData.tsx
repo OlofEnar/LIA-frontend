@@ -1,39 +1,48 @@
-import { EventDataForExport, User, UserEvent } from "../../types/types";
-import { aggregateEventsByName, filterEventsByDateRange, filterEventsByName, getEventTotal, packageforHubspotCsv } from "../../utils/utils";
+import { EventDataForExport, User } from '../../types/types';
+import {
+  aggregateEventsByName,
+  filterEvents,
+  getEventsTotal,
+  packageforHubspotCsv,
+} from '../../utils/utils';
 
-export const getHubspotExportData = (userIdsToExport: string[], selectedDates: string[], users: User[]) => {
-    const usersToExport: Array<Record<string, any>> = [];
-    const selectedEventNames: string[] = [
-        "ApplicationStarted",
-        "AssortmentAdded",
-        "ChangeMainView",
-        "CreatePDFSummary",
-        "LoadProjectStandalone",
-        "UserLoggedinStandalone",
-    ]
- 
-    userIdsToExport.forEach(userId => {
-        const user: User = users.find((user) => user.id === userId);
-        let events: UserEvent[] = [];
-        let filteredEvents: UserEvent[] = [];
+export const getHubspotExportData = (
+  userIdsToExport: string[],
+  selectedDates: string[],
+  users: User[]
+) => {
+  const userMap = new Map(users.map((user) => [user.id, user]));
+  const usersToExport: any[] = [];
+  const selectedEventNames: string[] = [
+    'ApplicationStarted',
+    'AssortmentAdded',
+    'ChangeMainView',
+    'CreatePDFSummary',
+    'LoadProjectStandalone',
+    'UserLoggedinStandalone',
+  ];
 
-        if(user) {
-            const exportedUser: EventDataForExport = {
-                userId: user.id,
-                email: "john.doe@mail.com",
-                totalEvents: 0,
-                events: [],
-            };
+  userIdsToExport.forEach((userId) => {
+    const user = userMap.get(userId);
+    if (!user) return;
 
-            filteredEvents = filterEventsByDateRange(selectedDates, user.events); 
-            events = aggregateEventsByName(filteredEvents);
-            filteredEvents = filterEventsByName(selectedEventNames, events);
-            exportedUser.events = filteredEvents;
-            exportedUser.totalEvents = getEventTotal(exportedUser.events);
-            const convertedUser = packageforHubspotCsv(exportedUser);
-            usersToExport.push(convertedUser);
-        }
-    });
-    console.log(usersToExport);
-    return usersToExport;
+    const filteredEvents = filterEvents(
+      user.events,
+      selectedDates,
+      selectedEventNames
+    );
+    const events = aggregateEventsByName(filteredEvents);
+
+    const exportedUser: EventDataForExport = {
+      userId: user.id,
+      email: 'place@holder.com',
+      totalEvents: getEventsTotal(events),
+      events,
+    };
+
+    usersToExport.push(packageforHubspotCsv(exportedUser));
+  });
+
+  console.log(usersToExport);
+  return usersToExport;
 };

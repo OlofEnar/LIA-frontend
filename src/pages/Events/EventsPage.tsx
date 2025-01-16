@@ -1,12 +1,11 @@
-import { DisplayEventsTable } from "../../components/DisplayEventsTable";
-import "./EventsPage.scss"
-
+import { DisplayEventsTable } from '../../components/table/DisplayEventsTable';
+import './EventsPage.scss';
 
 const EventsPage = () => {
-    return (
-        <>
-        <DisplayEventsTable />
-        </>
-    );
+  return (
+    <>
+      <DisplayEventsTable />
+    </>
+  );
 };
 export default EventsPage;
