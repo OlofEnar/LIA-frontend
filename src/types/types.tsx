@@ -2,7 +2,7 @@
 export type SignalColours = "green" | "yellow" | "red";
 
 export interface User {
-    id: number;
+    id: string;
     score: number;
     totalEvents: number;
     flag?: SignalColours; 
@@ -40,4 +40,9 @@ export interface UserEventTable extends UserEvent {
 export interface DownloadJSONProps {
     data: Array<Record<string, any>>;
     fileName: string;
-  }
+}
+
+export type DateRange = {
+    from: Date | null;
+    to: Date | null;
+};

@@ -1,7 +1,11 @@
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { AggregatedEventData } from '../../types/types';
+import { useEventsBarChart } from './useEventsBarChart';
 
-const EventsBarChart = ({chartData}: {chartData:AggregatedEventData[]}) => {
+const EventsBarChart = () => {
+  const { data: chartData, isLoading, isError, error } = useEventsBarChart();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>An error occurred: {error.message}</div>;
 
     return (
       <ResponsiveContainer width="100%" maxHeight={400}>

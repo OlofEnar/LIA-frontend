@@ -1,4 +1,4 @@
-import "./users.scss"
+import "./Users.scss"
 import DataTable from "../../components/table/DataTable/DataTable";
 import { userColumns } from "../../components/table/columns";
 import { useUsersQuery } from "../../queries/useUserQueries";

@@ -2,7 +2,11 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Respons
 import styles from "./charts.module.scss"
 import { UserEvent } from '../../types/types';
 
-const EventBarChart = ({chartData}: {chartData:UserEvent[]}) => {
+type BarChartProps = {
+  chartData: UserEvent[];
+}; 
+
+const EventBarChart = ({chartData}: BarChartProps) => {
   console.log(chartData);
 
     if(chartData.length < 3) {
