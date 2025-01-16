@@ -10,9 +10,10 @@ import {
     getFilteredRowModel,
     filterFns} from "@tanstack/react-table"
 import "../../../types/types"
-import "./dataTable.scss"
-import { useState } from "react";
+import "./DataTable.scss"
+import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from 'lucide-react';
+import { useSelectedUsersStore } from "../../../store";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -25,7 +26,7 @@ columns,
 data,
 showTotalFooter = false,
 }: DataTableProps<TData, TValue>) {
-
+const { setSelectedUserIds } = useSelectedUsersStore();
 const [rowSelection, setRowSelection] = useState({});
 const [sorting, setSorting] = useState<SortingState>([]);
 const [pagination, setPagination] = useState<PaginationState>({
@@ -60,6 +61,15 @@ const table = useReactTable({
         globalFilter: searchValue,
     },           
     });
+
+useEffect(() => {
+    const selectedIds = Object.keys(table.getState().rowSelection).map(rowId => {
+        const row = table.getRow(rowId);
+        return row?.original?.id;
+    });
+
+    setSelectedUserIds(selectedIds);
+}, [table.getState().rowSelection, setSelectedUserIds]);
 
     return (
         <div>
@@ -184,10 +194,6 @@ const table = useReactTable({
                     </div>
                 </div>
             </div>
-            {/* <div>
-                <label>Row Selection State:</label>
-                <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
-            </div> */}
         </div>
     );
 };

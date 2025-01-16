@@ -46,7 +46,6 @@ export const userColumns: ColumnDef<User>[] = [
         accessorKey: 'id',
         header: 'ID',
         cell: (info) => (info.getValue() as string).slice(0,4),
-
     },
     { accessorKey: 'score', header: 'Score'},
 /*     { 

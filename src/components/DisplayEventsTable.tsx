@@ -4,7 +4,7 @@ import { eventColumns } from "./table/columns";
 import { UserEvent } from "../types/types";
 import DataTable from "./table/DataTable/DataTable";
 import { useDateRangeStore } from "../store";
-import { getDateRangeArray } from "../utils/utils";
+import { aggregateEventsByName, filterEventsByDateRange, getDateRangeArray } from "../utils/utils";
 import { useEventsQuery } from "../queries/useEventQueries";
 
 export const DisplayEventsTable = () => {
@@ -14,27 +14,9 @@ export const DisplayEventsTable = () => {
 
     const filteredEventData = useMemo(() => {
         if (!userEvents) return [];
-        const eventData: UserEvent[] = [];
+        const eventData: UserEvent[] = filterEventsByDateRange(selectedDates, userEvents);
 
-        selectedDates.forEach((date) => {
-            const events = userEvents.filter((event) => event.date === date);
-            if (events.length > 0) {
-                eventData.push(...events);
-            }
-        });
-
-        return Array.from(eventData.reduce((map, cur) => {
-            const name = cur.eventName;
-
-            if (map.has(name)) {
-                const existingEvent = map.get(name);
-                existingEvent.eventCount += cur.eventCount;
-            } else {
-                map.set(name, { ...cur });
-            }
-            
-            return map;
-        }, new Map<string, EventNames>()).values());
+        return aggregateEventsByName(eventData);
     }, [selectedDates, userEvents]);
 
     console.log(filteredEventData);

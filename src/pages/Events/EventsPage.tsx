@@ -1,12 +1,12 @@
 import { DisplayEventsTable } from "../../components/DisplayEventsTable";
-import "./events.scss"
+import "./EventsPage.scss"
 
 
-const Users = () => {
+const EventsPage = () => {
     return (
         <>
         <DisplayEventsTable />
         </>
     );
-}
-export default Users;
+};
+export default EventsPage;

@@ -1,13 +1,11 @@
 import { useEventsByIdQuery } from "../queries/useEventQueries";
-import { useDateRangeStore } from "../store";
-import { AggregatedEventData, UserEventTable, UserEvent } from "../types/types";
-import { AggregateEvents, getDateRangeArray } from "../utils/utils";
+import { AggregatedEventData, DateRange, UserEvent } from "../types/types";
+import { aggregateEventsByDate, convertToUserEventTable, getDateRangeArray } from "../utils/utils";
 
-export const GetUserEventTableData = (userId: string) => {
-    const { selectedRange } = useDateRangeStore();
+export const GetUserEventTableData = (userId: string, selectedRange: DateRange) => {
     const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
-    const chartData: AggregatedEventData[] = [];
-    const eventNames: UserEventTable[] = [];
+    let aggregatedEvents: AggregatedEventData[] = [];
+    const eventNames: UserEvent[] = [];
     let totalEvents: number = 0;
     
     const { data: userEvents, error, isError, isLoading, } = useEventsByIdQuery(userId);
@@ -15,34 +13,17 @@ export const GetUserEventTableData = (userId: string) => {
       if (isLoading) {return <div>Loading...</div> }
       if (isError) { return <div>An error occured {error.message}</div> }
 
-      AggregateEvents(userEvents, chartData);
-  
-/*     userEvents?.forEach((userEvent) => {
-        const { date, eventCount } = userEvent;
-        const index = chartData.findIndex(e => e.date === date);
-    
-        if (index > -1) {
-            chartData[index].eventTotal += eventCount;
-            chartData[index].events = chartData[index].events ?? [];
-            chartData[index].events.push(userEvent);   
-          } else {
-            chartData.push({
-              date: date,
-              eventTotal: eventCount,
-              events: [userEvent], 
-            });
-        }
-      }); */
-    
+      aggregatedEvents = aggregateEventsByDate(userEvents);
+      
       selectedDates.forEach((date) => {
-        const event = chartData.find((event) => event.date === date);
+        const event = aggregatedEvents.find((event) => event.date === date);
         totalEvents += event?.eventTotal || 0;
         if (event) {
           event.events.forEach((item) => eventNames.push(item))
         } 
       });
     
-    const filteredChartData = Array.from(eventNames.reduce((map, cur) => {
+    const filteredEvents = Array.from(eventNames.reduce((map, cur) => {
       const name = cur.eventName;
       
       if (map.has(name)) {
@@ -53,23 +34,15 @@ export const GetUserEventTableData = (userId: string) => {
       }  
       return map;
     }, new Map()).values());
-        
-    const finalChartData = convertToUserEventTable(filteredChartData) 
-  
-    function convertToUserEventTable(
-      data: UserEvent[],
-    ): UserEventTable[] {
-      return data.map((event) => ({
-        ...event,
-        eventDistribution: ((event.eventCount / totalEvents) * 100).toFixed(1) + '%',
-      }));
-    };
-  
-    console.log(finalChartData);
+
+    console.log(filteredEvents);
+    const convertedData = convertToUserEventTable(totalEvents, filteredEvents) 
+    
+    console.log(convertedData);
     console.log(totalEvents);
   
     return {
-      data: finalChartData,
+      data: convertedData,
       totalEvents,
     };
   };

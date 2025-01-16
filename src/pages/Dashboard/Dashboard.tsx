@@ -1,8 +1,7 @@
-import "./dashboard.scss"
+import "./Dashboard.scss"
 import { ArrowDown, ArrowUp, Activity } from 'lucide-react';
 import { DisplayDashboardTable } from "../../components/DisplayDashboardTable";
-import EventsBarChart from "../../components/charts/EventsBarChart";
-import { GetEventsBarCharData } from "../../services/getEventsBarCharData";
+import EventsBarChart from "../../components/EventsBarChart/EventsBarChart";
 
 const Dashboard = () => {
     return (
@@ -32,7 +31,7 @@ const Dashboard = () => {
                 </div>
                 <span className="summary">34</span>
             </div>
-            <div className="grid-item box-landscape shadow"> <EventsBarChart chartData={GetEventsBarCharData()}/></div>
+            <div className="grid-item box-landscape shadow"> <EventsBarChart /></div>
             <div className="grid-item box-landscape shadow"><DisplayDashboardTable /></div>
         </div>
     );

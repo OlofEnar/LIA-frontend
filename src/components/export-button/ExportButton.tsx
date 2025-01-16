@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { generateCsv, download, mkConfig } from "export-to-csv";
 import { useCsvStore, useDateRangeStore } from "../../store";
 import { Download } from "lucide-react";
-import styles from "./exportButton.module.scss";
+import styles from "./ExportButton.module.scss";
 
 export const ExportButton = () => {
     const { csvData } = useCsvStore();

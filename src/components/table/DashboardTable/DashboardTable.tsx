@@ -8,9 +8,9 @@ import {
     getSortedRowModel,
     PaginationState} from "@tanstack/react-table"
 import "../../../types/types"
-import "./dashboardTable.scss"
+import "./DashboardTable.scss"
 import { useState } from "react";
-import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ExternalLink } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 
 interface DataTableProps<TData, TValue> {

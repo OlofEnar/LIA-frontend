@@ -1,9 +1,9 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
-import CustomTooltip from './custom-tooltip/CustomTooltip';
-import OptionsModal from '../options-modal/OptionsModal';
+import CustomTooltip from '../custom-tooltip/CustomTooltip';
+import OptionsModal from '../../options-modal/OptionsModal';
 import { useState } from 'react';
+import { useUserActivityLineChart } from './useUserActivityLineChart';
 // import { useCsvStore } from '../../store';
-import { GetUserLineChartData } from '../../services/getUserLineChartData';
 
 const UserActivityLineChart = ({userId}: {userId:string}) => {
   // const { setExportData } = useCsvStore();
@@ -23,7 +23,8 @@ const UserActivityLineChart = ({userId}: {userId:string}) => {
   });
   setExportData(eventsToExport);
 */
-  const chartData = GetUserLineChartData(userId, windowSize);
+  const chartData = useUserActivityLineChart(userId, windowSize);
+  console.log(chartData);
 
     return (
       <>

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { create } from "zustand"
+import { DateRange } from "./types/types";
 
 interface UserCountStore {
     userCount: number;
@@ -16,10 +17,11 @@ interface DateRangeStore {
     setSelectedRange: (range: DateRange) => void;
 }
 
-type DateRange = {
-    from: Date | null;
-    to: Date | null;
-};
+interface SelectedUserIdsStore {
+    selectedUserIds: string[];
+    setSelectedUserIds: (userIds: string[]) => void;
+    resetSelectedUserIds: () => void;
+}
 
 // defaults to last 7 days
 const today = dayjs();
@@ -27,6 +29,12 @@ const defaultRange: DateRange = {
     from: today.subtract(29, 'day').toDate(),
     to: today.toDate(),
 };
+
+export const useSelectedUsersStore = create<SelectedUserIdsStore>((set) => ({
+    selectedUserIds: [],
+    setSelectedUserIds: (userIds: string[]) => set({ selectedUserIds: userIds }),
+    resetSelectedUserIds: () => set({ selectedUserIds: [] }),
+}));
 
 export const useUserCountStore = create<UserCountStore>((set) => ({
     userCount: 0,
@@ -48,3 +56,4 @@ export const useCsvStore = create<CsvStore>((set) => ({
             return {exportData: newData};
         }),
 }));
+

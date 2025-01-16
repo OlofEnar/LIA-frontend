@@ -1,7 +1,7 @@
-import UserActivityLineChart from "../../components/charts/UserActivityLineChart";
+import UserActivityLineChart from "../../components/charts/UserActivityLineChart/UserActivityLineChart";
 import * as Separator from "@radix-ui/react-separator";
 import { useParams } from "react-router-dom";
-import styles from "./userpage.module.scss"
+import styles from "./UserPage.module.scss"
 import { FlagTriangleRight, Settings2, } from "lucide-react";
 import { getLatestUserActivity } from "../../utils/utils";
 import { DisplayUserEventTable } from "../../components/DisplayUserEventsTable";
@@ -32,14 +32,14 @@ const UserPage = () => {
                 <p><strong>Total events: </strong>{user?.totalEvents}</p>
                 </div>
             </div>
-            <div className="grid-item box-landscape shadow">
+            <div className="grid-item box-portrait shadow">
                 <div className="cardHeader">
-                    <div className="label">Events summary</div>
+                    <div className="label">Events</div>
                     <Settings2 size={22} strokeWidth={1.5}/>
                 </div>
                 <DisplayUserEventTable userId={id}/>
             </div>
-            <div className="grid-item box-landscape shadow">
+            <div className="grid-item box shadow">
                 <UserActivityLineChart userId={id}/>
             </div>
         </div>

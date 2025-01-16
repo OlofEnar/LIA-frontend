@@ -1,6 +1,6 @@
 import * as Separator from "@radix-ui/react-separator";
 import { Link, useParams } from "react-router-dom";
-import styles from "./eventpage.module.scss"
+import styles from "./EventPage.module.scss"
 import { Settings } from "lucide-react";
 import { useDateRangeStore, useUserCountStore } from "../../store";
 import { useEffect } from "react";

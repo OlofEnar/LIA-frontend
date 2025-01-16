@@ -1,10 +1,10 @@
 import { Label, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { useDateRangeStore } from "../../../store";
 import { useQuery } from "react-query";
-import { getEventsByUserId } from "../../../services/api";
 import { UserEvent, AggregatedEventData } from "../../../types/types";
 import styles from "./UserEventsPieChart.module.scss"
 import { getDateRangeArray } from "../../../utils/utils";
+import { getEventsByUserId } from "../../../api/eventApi";
 
 const UserEventsPieChart = ({userId}: {userId:string}) => {
 let totalEvents: number = 0;

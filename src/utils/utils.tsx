@@ -1,4 +1,4 @@
-import { AggregatedEventData, DownloadJSONProps, UserEvent } from "../types/types";
+import { AggregatedEventData, DownloadJSONProps, EventDataForExport, UserEvent, UserEventTable } from "../types/types";
 import dayjs from "dayjs";
     
 export const downloadJSON = ({ data, fileName }: DownloadJSONProps) => {
@@ -39,7 +39,7 @@ export function getDateRangeArray(startDate: Date | null, endDate: Date | null):
     currentDate = currentDate.add(1, 'day');
   }
   return datesArray;
-}
+};
 
 export const getLatestUserActivity = (events: UserEvent[] = []): string | null => {
   if (events.length === 0) return null;
@@ -88,47 +88,91 @@ export function calcMovingAverage(data: { date: string; eventTotal: number }[], 
   }
 
   return movingAverages;
-}
+};
 
-export function detectTrends(
-  data: { date: string; value: number }[],
-  windowSize: number
-) {
-  return data.map((point, index) => {
-    if (index < windowSize) {
-      return { ...point, isUpwardTrend: false, isDownwardTrend: false };
-    }
+export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
+  const aggregatedEvents: AggregatedEventData[] = [];
 
-    const windowData = data.slice(index - windowSize, index + 1);
-
-    const isTrendUpward = windowData.every((_, i, arr) =>
-      i === 0 ? true : arr[i].value > arr[i - 1].value
-    );
-
-    const isTrendDownward = windowData.every((_, i, arr) =>
-      i === 0 ? true : arr[i].value < arr[i - 1].value
-    );
-
-    return { ...point, isUpwardTrend: isTrendUpward, isDownwardTrend: isTrendDownward };
-  });
-}
-
-export const AggregateEvents = (userEvents: UserEvent[] = [], chartData: AggregatedEventData[] = []) => {
   userEvents?.forEach((userEvent) => {
     const { date, eventCount } = userEvent;
-    const index = chartData.findIndex(e => e.date === date);
+    const index = aggregatedEvents.findIndex(e => e.date === date);
 
     if (index > -1) {
-        chartData[index].eventTotal += eventCount;
-        chartData[index].events = chartData[index].events ?? [];
-        chartData[index].events.push(userEvent);   
+        aggregatedEvents[index].eventTotal += eventCount;
+        aggregatedEvents[index].events = aggregatedEvents[index].events ?? [];
+        aggregatedEvents[index].events.push(userEvent);   
       } else {
-        chartData.push({
+        aggregatedEvents.push({
           date: date,
           eventTotal: eventCount,
           events: [userEvent], 
         });
     }
   });
-  console.log(chartData)
+  return aggregatedEvents;
+};
+
+export const aggregateEventsByName = (userEvents: UserEvent[] = []) => {
+  const aggregatedEvents = Array.from(userEvents.reduce((map, cur) => {
+    const name = cur.eventName;
+    
+    if (map.has(name)) {
+      const existingEvent = map.get(name);
+      existingEvent.eventCount += cur.eventCount;
+    } else {
+      map.set(name, { ...cur });
+    }  
+    return map;
+  }, new Map()).values());
+  return aggregatedEvents;
+};
+
+export const filterEventsByDateRange = (selectedDates: string[] = [], userEvents: UserEvent[] = []) => {
+  const eventData: UserEvent[] = [];
+
+  selectedDates.forEach((date) => {
+    const events = userEvents.filter((event) => event.date === date);
+    if (events.length > 0) {
+        eventData.push(...events);
+    }
+  });
+  return eventData;
+};
+
+export const filterEventsByName = (eventNames: string[] = [], userEvents: UserEvent[] = []) => {
+  const eventData: UserEvent[] = [];
+
+  eventNames.forEach((eventName) => {
+    const events = userEvents.filter((event) => event.eventName === eventName);
+    if (events.length > 0) {
+        eventData.push(...events);
+    }
+  });
+  return eventData;
+};
+
+export function convertToUserEventTable(
+  totalEvents: number, data: UserEvent[],
+): UserEventTable[] {
+  return data.map((event) => ({
+    ...event,
+    eventDistribution: ((event.eventCount / totalEvents) * 100).toFixed(1) + '%',
+  }));
+};
+
+export function getEventTotal(userEvents: UserEvent[]): number {
+  return userEvents.reduce((total, event) => total + event.eventCount, 0);
+}
+
+export function packageforHubspotCsv(user: EventDataForExport) {
+  const { userId, email, totalEvents, events } = user;
+  const convertedUser: Record<string, any> = { userId, email, totalEvents };
+
+  if(events) {
+    events.forEach(event => {
+      convertedUser[event.eventName] = event.eventCount;
+    });
+  }
+  console.log(convertedUser);
+  return convertedUser;
 }
