@@ -54,7 +54,7 @@ const UserPage = () => {
           </p>
         </div>
       </div>
-      <div className="grid-item box-portrait shadow">
+      <div className="grid-item box-landscape shadow">
         <div className="cardHeader">
           <div className="label">Events</div>
           <Settings2 size={22} strokeWidth={1.5} />

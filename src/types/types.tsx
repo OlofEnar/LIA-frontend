@@ -6,7 +6,7 @@ export interface User {
   totalEvents: number;
   flag?: SignalColours;
   trend?: SignalColours;
-  events: [];
+  events?: UserEvent[];
 }
 
 export interface UserEvent {
@@ -51,4 +51,9 @@ export interface DownloadJSONProps {
 export type DateRange = {
   from: Date | null;
   to: Date | null;
+};
+
+export type TableUrlPath = {
+  userPath: string;
+  eventPath: string;
 };

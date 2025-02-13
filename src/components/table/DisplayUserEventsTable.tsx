@@ -16,6 +16,7 @@ export const DisplayUserEventTable = ({ userId }: { userId: string }) => {
         columns={eventColumns(totalEvents)}
         data={chartData}
         showTotalFooter={true}
+        tableType="event"
       />
     </>
   );

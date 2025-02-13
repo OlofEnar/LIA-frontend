@@ -23,17 +23,20 @@ import {
   Search,
 } from 'lucide-react';
 import { useSelectedUsersStore } from '../../../store';
+import { useNavigate } from 'react-router';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   showTotalFooter?: boolean;
+  tableType: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   showTotalFooter = false,
+  tableType,
 }: DataTableProps<TData, TValue>) {
   const { setSelectedUserIds } = useSelectedUsersStore();
   const [rowSelection, setRowSelection] = useState({});
@@ -70,6 +73,18 @@ export function DataTable<TData, TValue>({
       globalFilter: searchValue,
     },
   });
+
+  const urlPath = (tableType: string, row: any) =>
+    tableType === 'user'
+      ? `/users/${row.original.id}`
+      : tableType === 'event'
+      ? `/events/${row.original.eventName}`
+      : '/';
+
+  const navigate = useNavigate();
+  const handleRowClick = (tableType: string, row: any) => {
+    navigate(urlPath(tableType, row));
+  };
 
   useEffect(() => {
     const selectedIds = Object.keys(table.getState().rowSelection).map(
@@ -124,7 +139,11 @@ export function DataTable<TData, TValue>({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
+              <tr
+                key={row.id}
+                onClick={() => handleRowClick(tableType, row)}
+                style={{ cursor: 'pointer' }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
