@@ -6,11 +6,13 @@ import { FlagTriangleRight, Settings2 } from 'lucide-react';
 import { getLatestUserActivity } from '../../utils/utils';
 import { DisplayUserEventTable } from '../../components/table/DisplayUserEventsTable';
 import { useUserQuery } from '../../queries/useUserQueries';
+import { useEventsByIdQuery } from '../../queries/useEventQueries';
 
 const UserPage = () => {
   const { id } = useParams<{ id: string | any }>();
 
   const { data: user, error, isError, isLoading } = useUserQuery(id);
+  const { data: userEvent } = useEventsByIdQuery(id);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -19,7 +21,7 @@ const UserPage = () => {
     return <div>An error occured {error.message}</div>;
   }
 
-  const latestActivity: string | null = getLatestUserActivity(user?.events);
+  const latestActivity: string | null = getLatestUserActivity(userEvent);
 
   return (
     <div className={styles.single}>
@@ -47,7 +49,7 @@ const UserPage = () => {
             {latestActivity}
           </p>
           <p>
-            <strong>Total events: </strong>
+            <strong>Logged events: </strong>
             {user?.totalEvents}
           </p>
         </div>

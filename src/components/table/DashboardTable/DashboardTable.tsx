@@ -49,12 +49,6 @@ export function DashboardTable<TData, TValue>({
     },
   });
 
-  // useEffect(() => {
-  //     const order = sorting[0]?.desc ? "desc" : "asc";
-  //     const sort = sorting[0]?.id ?? "id";
-  // }, [sorting]
-  // )
-
   return (
     <div>
       <div className="tableContainer">

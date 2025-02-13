@@ -1,4 +1,7 @@
-import { useEventsByIdQuery } from '../../queries/useEventQueries';
+import {
+  useEventsByIdQuery,
+  useEventsQuery,
+} from '../../queries/useEventQueries';
 import { AggregatedEventData, DateRange } from '../../types/types';
 import {
   aggregateEventsByName,
@@ -8,20 +11,22 @@ import {
   getEventsTotal,
 } from '../../utils/utils';
 
-export const GetUserEventTableData = (
-  userId: string,
-  selectedRange: DateRange
+export const useEventTableData = (
+  selectedRange: DateRange,
+  userId?: string
 ) => {
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
   let aggregatedEvents: AggregatedEventData[] = [];
   let totalEvents: number = 0;
+  const eventsByIdQuery = useEventsByIdQuery(userId || '');
+  const eventsQuery = useEventsQuery();
 
   const {
     data: userEvents,
     error,
     isError,
     isLoading,
-  } = useEventsByIdQuery(userId);
+  } = userId ? eventsByIdQuery : eventsQuery;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -33,7 +38,7 @@ export const GetUserEventTableData = (
   const filteredEvents = filterEvents(userEvents, selectedDates);
   aggregatedEvents = aggregateEventsByName(filteredEvents);
   totalEvents = getEventsTotal(aggregatedEvents);
-  const convertedData = convertToUserEventTable(totalEvents, filteredEvents);
+  const convertedData = convertToUserEventTable(totalEvents, aggregatedEvents);
 
   return {
     data: convertedData,

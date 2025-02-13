@@ -1,19 +1,19 @@
-import { GetUserEventTableData } from './getUserEventTableData';
+import { useEventTableData } from './useEventTableData';
 import { useDateRangeStore } from '../../store';
-import { userEventColumns } from './columns';
 import DataTable from './DataTable/DataTable';
+import { eventColumns } from './columns';
 
 export const DisplayUserEventTable = ({ userId }: { userId: string }) => {
   const { selectedRange } = useDateRangeStore();
-  const { data: chartData = [], totalEvents } = GetUserEventTableData(
-    userId,
-    selectedRange
+  const { data: chartData = [], totalEvents } = useEventTableData(
+    selectedRange,
+    userId
   );
 
   return (
     <>
       <DataTable
-        columns={userEventColumns(totalEvents)}
+        columns={eventColumns(totalEvents)}
         data={chartData}
         showTotalFooter={true}
       />
