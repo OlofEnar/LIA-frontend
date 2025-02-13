@@ -36,7 +36,6 @@ export const useUserActivityLineChart = (
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
   const movingAverageData = calcMovingAverage(chartData, windowSize);
-  console.log(movingAverageData);
 
   // Merge MA & ChartData
   const mergedChartData = chartData.map((dataPoint, index) => ({
@@ -52,7 +51,5 @@ export const useUserActivityLineChart = (
        });
       });
       setExportData(eventsToExport); */
-
-  console.log(mergedChartData);
   return mergedChartData;
 };

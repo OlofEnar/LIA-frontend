@@ -98,6 +98,7 @@ export function calcMovingAverage(
   windowSize: number
 ) {
   const movingAverages: { date: string; movingAverage: number }[] = [];
+  console.log(movingAverages);
 
   for (let i = 0; i < data.length; i++) {
     const start = Math.max(0, i - windowSize + 1);
@@ -114,18 +115,18 @@ export function calcMovingAverage(
 export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
   const dateMap = new Map<string, AggregatedEventData>();
 
-  userEvents.forEach((userEvent) => {
-    const { date, eventCount } = userEvent;
+  userEvents.forEach((event) => {
+    const { date, eventCount } = event;
 
     if (dateMap.has(date)) {
       const aggregated = dateMap.get(date)!;
       aggregated.eventTotal += eventCount;
-      aggregated.events.push(userEvent);
+      aggregated.events.push(event);
     } else {
       dateMap.set(date, {
         date,
         eventTotal: eventCount,
-        events: [userEvent],
+        events: [event],
       });
     }
   });
@@ -133,22 +134,25 @@ export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
 };
 
 export const aggregateEventsByName = (userEvents: UserEvent[] = []) => {
-  const aggregatedEvents = Array.from(
-    userEvents
-      .reduce((map, cur) => {
-        const name = cur.eventName;
+  const nameMap = new Map<string, AggregatedEventData>();
 
-        if (map.has(name)) {
-          const existingEvent = map.get(name);
-          existingEvent.eventCount += cur.eventCount;
-        } else {
-          map.set(name, { ...cur });
-        }
-        return map;
-      }, new Map())
-      .values()
-  );
-  return aggregatedEvents;
+  userEvents.forEach((event) => {
+    const name = event.eventName;
+
+    if (nameMap.has(name)) {
+      const aggregated = nameMap.get(name)!;
+      aggregated.eventTotal += event.eventCount;
+      aggregated.events!.push(event);
+    } else {
+      nameMap.set(name, {
+        eventName: name,
+        date: event.date,
+        eventTotal: event.eventCount,
+        events: [event],
+      });
+    }
+  });
+  return Array.from(nameMap.values());
 };
 
 export const filterEvents = (
@@ -165,17 +169,22 @@ export const filterEvents = (
 
 export function convertToUserEventTable(
   totalEvents: number,
-  data: UserEvent[]
+  data: AggregatedEventData[]
 ): UserEventTable[] {
   return data.map((event) => ({
     ...event,
     eventDistribution:
-      ((event.eventCount / totalEvents) * 100).toFixed(1) + '%',
+      ((event.eventTotal / totalEvents) * 100).toFixed(1) + '%',
   }));
 }
 
-export function getEventsTotal(userEvents: UserEvent[]): number {
-  return userEvents.reduce((total, event) => total + event.eventCount, 0);
+export function getEventsTotal<
+  T extends { eventCount?: number; eventTotal?: number }
+>(events: T[]): number {
+  return events.reduce(
+    (total, event) => total + (event.eventTotal ?? event.eventCount ?? 0),
+    0
+  );
 }
 
 export function packageforHubspotCsv(user: EventDataForExport) {

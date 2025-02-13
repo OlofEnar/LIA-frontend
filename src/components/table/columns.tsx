@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { User, UserEvent, UserEventTable } from '../../types/types';
+import { User, UserEventTable } from '../../types/types';
 import { ExternalLink, FlagTriangleRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { HTMLProps } from 'react';
@@ -83,7 +83,9 @@ export const userColumns: ColumnDef<User>[] = [
   },
 ];
 
-export const eventColumns: ColumnDef<UserEvent>[] = [
+export const eventColumns = (
+  totalEvents: number
+): ColumnDef<UserEventTable>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -125,45 +127,8 @@ export const eventColumns: ColumnDef<UserEvent>[] = [
       );
     },
   },
-  // {
-  //     accessorKey: 'id',
-  //     header: 'ID',
-  //     cell: (info) => (info.getValue() as string).slice(0,4),
-
-  // },
-  { accessorKey: 'eventName', header: 'Event' },
-  { accessorKey: 'eventCount', header: 'Count' },
-];
-
-export const userEventColumns = (
-  totalEvents: number
-): ColumnDef<UserEventTable>[] => [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="px-1">
-        <IndeterminateCheckbox
-          {...{
-            checked: row.getIsSelected(),
-            disabled: !row.getCanSelect(),
-            indeterminate: row.getIsSomeSelected(),
-            onChange: row.getToggleSelectedHandler(),
-          }}
-        />
-      </div>
-    ),
-  },
   { accessorKey: 'eventName', header: 'Event', footer: 'Total' },
-  { accessorKey: 'eventCount', header: 'Count', footer: () => totalEvents },
+  { accessorKey: 'eventTotal', header: 'Count', footer: () => totalEvents },
   { accessorKey: 'eventDistribution', header: '%', footer: '100%' },
 ];
 

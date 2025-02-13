@@ -14,7 +14,9 @@ const Dashboard = () => {
         <span className="summary">76K</span>
       </div>
       <div className="grid-item box shadow">
-        <div className="label">Some data</div>
+        <div className="cardHeader">
+          <div className="label">Some data</div>
+        </div>
         <span className="summary">32</span>
       </div>
       <div className="grid-item box shadow">

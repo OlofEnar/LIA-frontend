@@ -1,40 +1,20 @@
-'use client';
-import { useMemo } from 'react';
-import { useEventsQuery } from '../../queries/useEventQueries';
 import { useDateRangeStore } from '../../store';
-import { UserEvent } from '../../types/types';
-import {
-  getDateRangeArray,
-  filterEvents,
-  aggregateEventsByName,
-} from '../../utils/utils';
 import { eventColumns } from './columns';
 import DataTable from './DataTable/DataTable';
+import { useEventTableData } from './useEventTableData';
 
 export const DisplayEventsTable = () => {
   const { selectedRange } = useDateRangeStore();
-  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
-  const { data: userEvents, error, isError, isLoading } = useEventsQuery();
-
-  const filteredEventData = useMemo(() => {
-    if (!userEvents) return [];
-    const eventData: UserEvent[] = filterEvents(userEvents, selectedDates);
-
-    return aggregateEventsByName(eventData);
-  }, [selectedDates, userEvents]);
-
-  console.log(filteredEventData);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>An error occurred: {error.message}</div>;
-  }
+  const { data: chartData = [], totalEvents } =
+    useEventTableData(selectedRange);
 
   return (
     <>
-      <DataTable columns={eventColumns} data={filteredEventData} />
+      <DataTable
+        columns={eventColumns(totalEvents)}
+        data={chartData}
+        showTotalFooter={true}
+      />
     </>
   );
 };
