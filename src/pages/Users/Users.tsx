@@ -30,7 +30,7 @@ const Users = () => {
   return (
     <>
       <DataTable
-        columns={userColumns}
+        columns={userColumns()}
         data={updatedUsers}
         tableType="user"
         showTotalFooter={true}

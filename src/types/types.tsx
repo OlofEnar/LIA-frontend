@@ -2,10 +2,9 @@ export type SignalColours = 'green' | 'yellow' | 'red';
 
 export interface User {
   id: string;
-  score: number;
+  clientVersion: string[];
+  userCountry: string[];
   totalEvents: number;
-  flag?: SignalColours;
-  trend?: SignalColours;
   events?: UserEvent[];
 }
 

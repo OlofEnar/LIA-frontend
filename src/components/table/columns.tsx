@@ -32,6 +32,8 @@ export const userColumns: ColumnDef<User>[] = [
     header: 'ID',
     cell: (info) => info.getValue() as string,
   },
+  { accessorKey: 'userCountry', header: 'Country' },
+  { accessorKey: 'clientVersion', header: 'Client' },
   { accessorKey: 'totalEvents', header: 'Events' },
 ];
 
@@ -64,7 +66,11 @@ export const eventColumns = (
   },
   { accessorKey: 'eventName', header: 'Event', footer: 'Total' },
   { accessorKey: 'eventDistribution', header: '%' },
-  { accessorKey: 'eventTotal', header: 'Count', footer: () => totalEvents },
+  {
+    accessorKey: 'eventTotal',
+    header: 'Count',
+    footer: () => totalEvents,
+  },
 ];
 
 function IndeterminateCheckbox({
