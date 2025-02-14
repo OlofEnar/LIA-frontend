@@ -30,6 +30,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   showTotalFooter?: boolean;
   tableType: string;
+  customPageSize?: number;
+  showSearch?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,13 +39,15 @@ export function DataTable<TData, TValue>({
   data,
   showTotalFooter = false,
   tableType,
+  customPageSize = 10,
+  showSearch = true,
 }: DataTableProps<TData, TValue>) {
   const { setSelectedUserIds } = useSelectedUsersStore();
   const [rowSelection, setRowSelection] = useState({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: customPageSize,
   });
   const [searchValue, setSearchValue] = useState('');
 
@@ -99,15 +103,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="inputContainer">
-        <Search strokeWidth={1.5} size={14} className="icon" />
-        <input
-          className="inputField"
-          value={searchValue}
-          onChange={handleInputChange}
-          placeholder="Search..."
-        />
-      </div>
+      {showSearch && (
+        <div className="inputContainer">
+          <Search strokeWidth={1.5} size={14} className="icon" />
+          <input
+            className="inputField"
+            value={searchValue}
+            onChange={handleInputChange}
+            placeholder="Search..."
+          />
+        </div>
+      )}
       <div className="tableContainer">
         <table>
           <thead>
@@ -175,7 +181,7 @@ export function DataTable<TData, TValue>({
           Showing {table.getRowModel().rows.length.toLocaleString()} of{' '}
           {table.getRowCount().toLocaleString()} Rows
         </div>
-        <div className="pageSize">
+        {/* <div className="pageSize">
           <span>Show</span>
           <select
             className="shadow buttonStyle"
@@ -190,7 +196,7 @@ export function DataTable<TData, TValue>({
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <div className="tableFooterRight">
           <span className="flex items-center gap-1">
             Page {table.getState().pagination.pageIndex + 1} of{' '}
