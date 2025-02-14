@@ -8,6 +8,8 @@ import { UserEvent } from '../../types/types';
 import { getDateRangeArray, getLatestEventActivity } from '../../utils/utils';
 import EventBarChart from '../../components/charts/EventBarChart';
 import { useEventsQuery } from '../../queries/useEventQueries';
+import EventTimestampAreaChart from '../../components/charts/EventTimestampAreaChart/EventDetailsChart';
+import OptionsModal from '../../components/options-modal/OptionsModal';
 
 const EventPage = () => {
   const { selectedEventName } = useParams<{ selectedEventName: string }>();
@@ -98,9 +100,10 @@ const EventPage = () => {
       </div>
       <div className="grid-item box-portrait shadow">
         <div className={styles.cardHeader}>
-          <div className="label">Top 5 dates?</div>
-          <Settings size={22} strokeWidth={1.5} />
+          <div className="label">Time of day usage</div>
+          <OptionsModal isGlobal={false} />
         </div>
+        <EventTimestampAreaChart selectedEventName={selectedEventName} />
       </div>
       <div className="grid-item box-landscape shadow">
         <div className={styles.cardHeader}>
