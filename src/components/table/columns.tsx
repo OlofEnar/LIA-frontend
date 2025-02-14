@@ -64,8 +64,8 @@ export const eventColumns = (
       </div>
     ),
   },
-  { accessorKey: 'eventName', header: 'Event', footer: 'Total' },
-  { accessorKey: 'eventDistribution', header: '%' },
+  { accessorKey: 'eventName', header: 'Event' },
+  { accessorKey: 'eventDistribution', header: '%', footer: 'Total' },
   {
     accessorKey: 'eventTotal',
     header: 'Count',

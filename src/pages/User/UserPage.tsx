@@ -28,21 +28,19 @@ const UserPage = () => {
       <div className="grid-item box shadow">
         <div className="cardHeader">
           <div className="label">User info</div>
-          <FlagTriangleRight
-            fill="green"
-            size={22}
-            strokeWidth={1.5}
-            color="green"
-          />
         </div>
         <Separator.Root className="SeparatorRoot" />
         <div className={styles.cardDetails}>
           <p>
-            <strong>Id:</strong> {user?.id.toString().slice(0, 4)}
+            <strong>Id:</strong> {user?.id}
           </p>
           <p>
-            <strong>Score: </strong>
-            {user?.score}
+            <strong>Client version: </strong>
+            {user?.clientVersion}
+          </p>
+          <p>
+            <strong>Country: </strong>
+            {user?.userCountry}
           </p>
           <p>
             <strong>Last active: </strong>

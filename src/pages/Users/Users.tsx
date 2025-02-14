@@ -14,7 +14,7 @@ const Users = () => {
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
   const { data: users = [], error, isError, isLoading } = useUsersQuery();
 
-  const updatedUsers = users.map((user) => {
+  const updatedUsersOnDateChange = users.map((user) => {
     const filteredEvents = filterEvents(user.events, selectedDates);
     const totalEvents = getEventsTotal(filteredEvents);
     return { ...user, totalEvents };
@@ -30,8 +30,8 @@ const Users = () => {
   return (
     <>
       <DataTable
-        columns={userColumns()}
-        data={updatedUsers}
+        columns={userColumns}
+        data={updatedUsersOnDateChange}
         tableType="user"
         showTotalFooter={true}
       />
