@@ -2,71 +2,52 @@ import * as Separator from '@radix-ui/react-separator';
 import { Link, useParams } from 'react-router-dom';
 import styles from './EventPage.module.scss';
 import { Settings } from 'lucide-react';
-import { useDateRangeStore, useUserCountStore } from '../../store';
-import { useEffect } from 'react';
-import { UserEvent } from '../../types/types';
-import { getDateRangeArray, getLatestEventActivity } from '../../utils/utils';
+import { useDateRangeStore } from '../../store';
+import { AggregatedEventData, UserEvent } from '../../types/types';
+import {
+  aggregateEventsByDate,
+  filterEvents,
+  getDateRangeArray,
+  getEventsTotal,
+  getLatestEventActivity,
+  getUserCount,
+} from '../../utils/utils';
 import EventBarChart from '../../components/charts/EventBarChart';
-import { useEventsQuery } from '../../queries/useEventQueries';
-import EventTimestampAreaChart from '../../components/charts/EventTimestampAreaChart/EventDetailsChart';
+import { useEventsByName } from '../../queries/useEventQueries';
 import OptionsModal from '../../components/options-modal/OptionsModal';
+import { EventDetailsChart } from '../../components/charts/EventDetailsChart/EventDetailsChart';
+import dayjs from 'dayjs';
 
 const EventPage = () => {
   const { selectedEventName } = useParams<{ selectedEventName: string }>();
   const { selectedRange } = useDateRangeStore();
-  const { setUserCount } = useUserCountStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
-
-  const { data: userEvents, error, isError, isLoading } = useEventsQuery();
-
+  let userCount: number = 0;
+  let chartData: AggregatedEventData[] = [];
+  let filteredEvents: UserEvent[] = [];
   let latestActivity: UserEvent | null = null;
+
+  const {
+    data: userEvents,
+    error,
+    isError,
+    isLoading,
+  } = useEventsByName(selectedEventName);
+
   if (selectedEventName) {
     latestActivity = getLatestEventActivity(userEvents, selectedEventName);
   }
 
-  let chartData: UserEvent[] = [];
-  const eventMap = new Map();
-  const uniqueUsers = new Set<string | undefined>();
-  let userCount: number = 0;
-
-  userEvents?.forEach((userEvent) => {
-    const { date, eventCount, eventName, userId } = userEvent;
-    const key = `${date}-${eventName}`;
-
-    if (eventMap.has(key)) {
-      eventMap.get(key).eventCount += eventCount;
-    } else {
-      eventMap.set(key, { ...userEvent });
-    }
-
-    if (
-      eventName === selectedEventName &&
-      date &&
-      selectedDates.includes(date)
-    ) {
-      uniqueUsers.add(userId);
-    }
-  });
-
-  chartData = selectedDates
-    .map((date) => {
-      const key = `${date}-${selectedEventName}`;
-      return eventMap.get(key);
-    })
-    .filter((event) => event !== undefined);
-
-  userCount = uniqueUsers.size;
+  filteredEvents = filterEvents(userEvents, selectedDates);
+  userCount = getUserCount(filteredEvents);
+  chartData = aggregateEventsByDate(filteredEvents);
+  const eventCount = getEventsTotal(chartData);
 
   chartData.sort((a, b) => {
-    const dateA = a.date ? new Date(a.date).getTime() : 0;
-    const dateB = b.date ? new Date(b.date).getTime() : 0;
+    const dateA = a.date ? dayjs(a.date).valueOf() : 0;
+    const dateB = b.date ? dayjs(b.date).valueOf() : 0;
     return dateA - dateB;
   });
-
-  useEffect(() => {
-    setUserCount(userCount);
-    console.log(`${userCount} unique users on ${selectedEventName}`);
-  }, [userCount, setUserCount, selectedEventName]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -94,7 +75,8 @@ const EventPage = () => {
             </Link>
           </p>
           <p>
-            <strong>Total events: </strong>34298
+            <strong>Total events: </strong>
+            {eventCount}
           </p>
         </div>
       </div>
@@ -103,7 +85,7 @@ const EventPage = () => {
           <div className="label">Time of day usage</div>
           <OptionsModal isGlobal={false} />
         </div>
-        <EventTimestampAreaChart selectedEventName={selectedEventName} />
+        <EventDetailsChart userEvents={filteredEvents} />
       </div>
       <div className="grid-item box-landscape shadow">
         <div className={styles.cardHeader}>

@@ -1,26 +1,12 @@
 import dayjs from 'dayjs';
-import { useEventsByName } from '../../../queries/useEventQueries';
+import { UserEvent } from '../../../types/types';
 
 export interface AggregatedEventDetails {
   hour: string;
   count: number;
 }
 
-export const useEventDetailsChart = (eventName: string) => {
-  const {
-    data: userEvents,
-    error,
-    isError,
-    isLoading,
-  } = useEventsByName(eventName);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>An error occured {error.message}</div>;
-  }
-
+export const useEventDetailsChart = (userEvents: UserEvent[]) => {
   const hourEvent: Record<string, number> = {};
 
   for (let i = 0; i < 24; i++) {

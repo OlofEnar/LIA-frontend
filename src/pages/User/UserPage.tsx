@@ -2,7 +2,7 @@ import UserActivityLineChart from '../../components/charts/UserActivityLineChart
 import * as Separator from '@radix-ui/react-separator';
 import { useParams } from 'react-router-dom';
 import styles from './UserPage.module.scss';
-import { FlagTriangleRight, Settings2 } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 import { getLatestUserActivity } from '../../utils/utils';
 import { DisplayUserEventTable } from '../../components/table/DisplayUserEventsTable';
 import { useUserQuery } from '../../queries/useUserQueries';
