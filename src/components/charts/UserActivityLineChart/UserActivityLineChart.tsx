@@ -12,10 +12,9 @@ import CustomTooltip from '../custom-tooltip/CustomTooltip';
 import OptionsModal from '../../options-modal/OptionsModal';
 import { useState } from 'react';
 import { useUserActivityLineChart } from './useUserActivityLineChart';
-// import { useCsvStore } from '../../store';
+import { format } from 'd3-format';
 
 const UserActivityLineChart = ({ userId }: { userId: string }) => {
-  // const { setExportData } = useCsvStore();
   const [windowSize, setWindowSize] = useState(14);
 
   const handleWindowSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -23,17 +22,8 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
     console.log(windowSize);
   };
 
-  /*   const eventsToExport: UserEvent[] = [];
-  filteredChartData.forEach((group) => {
-   group.events = group.events ?? [];
-   group.events.forEach(event => {
-     eventsToExport.push(event);
-   });
-  });
-  setExportData(eventsToExport);
-*/
   const chartData = useUserActivityLineChart(userId, windowSize);
-  console.log(chartData);
+  const tickFormatter = (tick) => format('~s')(tick).toUpperCase();
 
   return (
     <>
@@ -65,7 +55,7 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
             tickMargin={8}
             tickFormatter={(value) => value.slice(5)}
           />
-          <YAxis />
+          <YAxis tickFormatter={tickFormatter} />
           <Tooltip
             content={
               <CustomTooltip

@@ -187,6 +187,12 @@ export function getEventsTotal<
   );
 }
 
+export const getUserCount = (events: UserEvent[] = []): number => {
+  const uniqueIds = new Set<string>();
+  events.forEach((event) => uniqueIds.add(event.userId));
+  return uniqueIds.size;
+};
+
 export function packageforHubspotCsv(user: EventDataForExport) {
   const { userId, email, totalEvents, events } = user;
   const convertedUser: Record<string, any> = { userId, email, totalEvents };

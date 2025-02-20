@@ -5,15 +5,16 @@ import { useEventTableData } from './useEventTableData';
 
 export const DisplayEventsTable = () => {
   const { selectedRange } = useDateRangeStore();
-  const { data: chartData = [], totalEvents } =
+  const { data: userEvents = [], totalEvents } =
     useEventTableData(selectedRange);
 
   return (
     <>
       <DataTable
         columns={eventColumns(totalEvents)}
-        data={chartData}
+        data={userEvents}
         showTotalFooter={true}
+        tableType="event"
       />
     </>
   );
