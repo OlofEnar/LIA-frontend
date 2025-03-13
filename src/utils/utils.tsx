@@ -93,6 +93,25 @@ export const getLatestEventActivity = (
   return latestEvent;
 };
 
+export function calcMovingAverage(
+  data: { date: string; eventTotal: number }[],
+  windowSize: number
+) {
+  const movingAverages: { date: string; movingAverage: number }[] = [];
+  console.log(movingAverages);
+
+  for (let i = 0; i < data.length; i++) {
+    const start = Math.max(0, i - windowSize + 1);
+    const windowData = data.slice(start, i + 1);
+    const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
+    const avg = sum / windowData.length;
+
+    movingAverages.push({ date: data[i].date, movingAverage: avg });
+  }
+
+  return movingAverages;
+}
+
 export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
   const dateMap = new Map<string, AggregatedEventData>();
 
