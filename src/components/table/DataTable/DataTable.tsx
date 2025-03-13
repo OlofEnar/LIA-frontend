@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   tableType: string;
   customPageSize?: number;
   showSearch?: boolean;
+  showTableFooter?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   tableType,
   customPageSize = 10,
   showSearch = true,
+  showTableFooter = true,
 }: DataTableProps<TData, TValue>) {
   const { setSelectedUserIds } = useSelectedUsersStore();
   const [rowSelection, setRowSelection] = useState({});
@@ -86,7 +88,14 @@ export function DataTable<TData, TValue>({
       : '/';
 
   const navigate = useNavigate();
-  const handleRowClick = (tableType: string, row: any) => {
+  const handleRowClick = (
+    tableType: string,
+    row: any,
+    event: React.MouseEvent
+  ) => {
+    if ((event.target as HTMLElement).closest('input[type="checkbox"]')) {
+      return;
+    }
     navigate(urlPath(tableType, row));
   };
 
@@ -147,7 +156,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                onClick={() => handleRowClick(tableType, row)}
+                onClick={(e) => handleRowClick(tableType, row, e)}
                 style={{ cursor: 'pointer' }}
               >
                 {row.getVisibleCells().map((cell) => (
@@ -176,64 +185,50 @@ export function DataTable<TData, TValue>({
           )}
         </table>
       </div>
-      <div className="tableFooter">
-        <div>
-          Showing {table.getRowModel().rows.length.toLocaleString()} of{' '}
-          {table.getRowCount().toLocaleString()} Rows
-        </div>
-        {/* <div className="pageSize">
-          <span>Show</span>
-          <select
-            className="shadow buttonStyle"
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </select>
-        </div> */}
-        <div className="tableFooterRight">
-          <span className="flex items-center gap-1">
-            Page {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount().toLocaleString()}
-          </span>
-          <div className="paginationButtons">
-            <button
-              className="pagination shadow buttonStyle"
-              onClick={() => table.firstPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {<ChevronsLeft className="paginationIcons" strokeWidth={1} />}
-            </button>
-            <button
-              className="pagination shadow buttonStyle"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {<ChevronLeft className="paginationIcons" strokeWidth={1} />}
-            </button>
-            <button
-              className="pagination shadow buttonStyle"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {<ChevronRight className="paginationIcons" strokeWidth={1} />}
-            </button>
-            <button
-              className="pagination shadow buttonStyle"
-              onClick={() => table.lastPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {<ChevronsRight className="paginationIcons" strokeWidth={1} />}
-            </button>
+      {showTableFooter && (
+        <div className="tableFooter">
+          <div>
+            Showing {table.getRowModel().rows.length.toLocaleString()} of{' '}
+            {table.getRowCount().toLocaleString()} Rows
+          </div>
+          <div className="tableFooterRight">
+            <span className="flex items-center gap-1">
+              Page {table.getState().pagination.pageIndex + 1} of{' '}
+              {table.getPageCount().toLocaleString()}
+            </span>
+            <div className="paginationButtons">
+              <button
+                className="pagination shadow buttonStyle"
+                onClick={() => table.firstPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {<ChevronsLeft className="paginationIcons" strokeWidth={1} />}
+              </button>
+              <button
+                className="pagination shadow buttonStyle"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {<ChevronLeft className="paginationIcons" strokeWidth={1} />}
+              </button>
+              <button
+                className="pagination shadow buttonStyle"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                {<ChevronRight className="paginationIcons" strokeWidth={1} />}
+              </button>
+              <button
+                className="pagination shadow buttonStyle"
+                onClick={() => table.lastPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                {<ChevronsRight className="paginationIcons" strokeWidth={1} />}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

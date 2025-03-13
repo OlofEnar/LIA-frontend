@@ -1,7 +1,7 @@
 import {
   AggregatedEventData,
   DownloadJSONProps,
-  EventDataForExport,
+  User,
   UserEvent,
   UserEventTable,
 } from '../types/types';
@@ -93,25 +93,6 @@ export const getLatestEventActivity = (
   return latestEvent;
 };
 
-export function calcMovingAverage(
-  data: { date: string; eventTotal: number }[],
-  windowSize: number
-) {
-  const movingAverages: { date: string; movingAverage: number }[] = [];
-  console.log(movingAverages);
-
-  for (let i = 0; i < data.length; i++) {
-    const start = Math.max(0, i - windowSize + 1);
-    const windowData = data.slice(start, i + 1);
-    const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
-    const avg = sum / windowData.length;
-
-    movingAverages.push({ date: data[i].date, movingAverage: avg });
-  }
-
-  return movingAverages;
-}
-
 export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
   const dateMap = new Map<string, AggregatedEventData>();
 
@@ -167,6 +148,15 @@ export const filterEvents = (
   );
 };
 
+export const filterUsers = (
+  selectedUsers: string[] = [],
+  users: User[] = []
+) => {
+  return users.filter(
+    (user) => selectedUsers.length === 0 || selectedUsers.includes(user.id)
+  );
+};
+
 export function convertToUserEventTable(
   totalEvents: number,
   data: AggregatedEventData[]
@@ -193,15 +183,4 @@ export const getUserCount = (events: UserEvent[] = []): number => {
   return uniqueIds.size;
 };
 
-export function packageforHubspotCsv(user: EventDataForExport) {
-  const { userId, email, totalEvents, events } = user;
-  const convertedUser: Record<string, any> = { userId, email, totalEvents };
-
-  if (events) {
-    events.forEach((event) => {
-      convertedUser[event.eventName] = event.eventCount;
-    });
-  }
-  console.log(convertedUser);
-  return convertedUser;
-}
+export function packageforHubspotCsv() {}

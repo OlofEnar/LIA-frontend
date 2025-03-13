@@ -1,19 +1,15 @@
-import { EventDataForExport, User } from '../../types/types';
+import { User } from '../../types/types';
 import {
   aggregateEventsByName,
   filterEvents,
   getEventsTotal,
-  packageforHubspotCsv,
 } from '../../utils/utils';
 
 export const getHubspotExportData = (
-  userIdsToExport: string[],
   selectedDates: string[],
   users: User[]
 ) => {
-  const userMap = new Map(users.map((user) => [user.id, user]));
-  const usersToExport: any[] = [];
-  const selectedEventNames: string[] = [
+  const selectedEventNames = [
     'ApplicationStarted',
     'AssortmentAdded',
     'ChangeMainView',
@@ -22,27 +18,31 @@ export const getHubspotExportData = (
     'UserLoggedinStandalone',
   ];
 
-  userIdsToExport.forEach((userId) => {
-    const user = userMap.get(userId);
-    if (!user) return;
+  const exports = users.map((user) => {
+    const packagedEvents: Record<string, number> = {};
+    selectedEventNames.forEach((name) => {
+      packagedEvents[name] = 0;
+    });
 
     const filteredEvents = filterEvents(
       user.events,
       selectedDates,
       selectedEventNames
     );
-    const events = aggregateEventsByName(filteredEvents);
+    const aggregatedEvents = aggregateEventsByName(filteredEvents);
 
-    const exportedUser: EventDataForExport = {
-      userId: user.id,
-      email: 'place@holder.com',
-      totalEvents: getEventsTotal(events),
-      events,
+    aggregatedEvents.forEach((event) => {
+      if (event.eventName !== undefined) {
+        packagedEvents[event.eventName] = event.eventTotal;
+      }
+    });
+
+    return {
+      unityId: user.id,
+      totalSumma: getEventsTotal(aggregatedEvents),
+      ...packagedEvents,
     };
-
-    usersToExport.push(packageforHubspotCsv(exportedUser));
   });
 
-  console.log(usersToExport);
-  return usersToExport;
+  return exports.sort((a, b) => (a.totalSumma < b.totalSumma ? 1 : -1));
 };

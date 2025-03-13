@@ -1,5 +1,3 @@
-export type SignalColours = 'green' | 'yellow' | 'red';
-
 export interface User {
   id: string;
   clientVersion: string[];
@@ -35,11 +33,11 @@ export interface UserEventTable extends AggregatedEventData {
   avgUserEventCount?: number;
 }
 
-export interface EventDataForExport {
-  userId: string;
-  email: string;
-  totalEvents: number;
-  events?: UserEvent[];
+export interface HubspotExport {
+  unityId: string;
+  email?: string;
+  totalSumma: number;
+  eventsWithCount: Record<string, number>;
 }
 
 export interface DownloadJSONProps {

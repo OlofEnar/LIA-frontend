@@ -5,7 +5,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-left: 1rem;
     
     .inputField {
         width: 100%;
@@ -17,7 +16,7 @@
 
     .icon {
         position: absolute;
-        right: 5px;
+        right: 0;
         pointer-events: none; 
     }
 }

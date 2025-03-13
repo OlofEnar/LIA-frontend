@@ -1,59 +1,58 @@
-import dayjs from "dayjs";
-import { create } from "zustand"
-import { DateRange } from "./types/types";
+import dayjs from 'dayjs';
+import { create } from 'zustand';
+import { DateRange } from './types/types';
 
 interface UserCountStore {
-    userCount: number;
-    setUserCount: (count: number) => void;
+  userCount: number;
+  setUserCount: (count: number) => void;
 }
 
 interface CsvStore {
-    exportData: Array<Record<string, any>>;
-    setExportData: (newData: Array<Record<string, any>>) => void;
+  exportData: Array<Record<string, any>>;
+  setExportData: (newData: Array<Record<string, any>>) => void;
 }
 
 interface DateRangeStore {
-    selectedRange: DateRange;
-    setSelectedRange: (range: DateRange) => void;
+  selectedRange: DateRange;
+  setSelectedRange: (range: DateRange) => void;
 }
 
 interface SelectedUserIdsStore {
-    selectedUserIds: string[];
-    setSelectedUserIds: (userIds: string[]) => void;
-    resetSelectedUserIds: () => void;
+  selectedUserIds: string[];
+  setSelectedUserIds: (userIds: string[]) => void;
+  resetSelectedUserIds: () => void;
 }
 
 // defaults to last 7 days
 const today = dayjs();
 const defaultRange: DateRange = {
-    from: today.subtract(29, 'day').toDate(),
-    to: today.toDate(),
+  from: today.subtract(29, 'day').toDate(),
+  to: today.toDate(),
 };
 
 export const useSelectedUsersStore = create<SelectedUserIdsStore>((set) => ({
-    selectedUserIds: [],
-    setSelectedUserIds: (userIds: string[]) => set({ selectedUserIds: userIds }),
-    resetSelectedUserIds: () => set({ selectedUserIds: [] }),
+  selectedUserIds: [],
+  setSelectedUserIds: (userIds: string[]) => set({ selectedUserIds: userIds }),
+  resetSelectedUserIds: () => set({ selectedUserIds: [] }),
 }));
 
 export const useUserCountStore = create<UserCountStore>((set) => ({
-    userCount: 0,
-    setUserCount: (userCount) => set(() => ({userCount: userCount}))
+  userCount: 0,
+  setUserCount: (userCount) => set(() => ({ userCount: userCount })),
 }));
 
 export const useDateRangeStore = create<DateRangeStore>((set) => ({
-    selectedRange: defaultRange,
-    setSelectedRange: (range) => set({selectedRange: range}),
+  selectedRange: defaultRange,
+  setSelectedRange: (range) => set({ selectedRange: range }),
 }));
 
 export const useCsvStore = create<CsvStore>((set) => ({
-    exportData: [],
-    setExportData: (newData) => 
-        set((state) => {
-            if (JSON.stringify(state.exportData) === JSON.stringify(newData)) {
-                return state;
-            }
-            return {exportData: newData};
-        }),
+  exportData: [],
+  setExportData: (newData) =>
+    set((state) => {
+      if (JSON.stringify(state.exportData) === JSON.stringify(newData)) {
+        return state;
+      }
+      return { exportData: newData };
+    }),
 }));
-

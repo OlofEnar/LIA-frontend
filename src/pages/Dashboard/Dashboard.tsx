@@ -10,17 +10,25 @@ import {
   getEventsTotal,
 } from '../../utils/utils';
 import { useDateRangeStore } from '../../store';
+import { format } from 'd3-format';
 
 const Dashboard = () => {
   const { data: users = [], error, isError, isLoading } = useUsersQuery();
   const { selectedRange } = useDateRangeStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
 
-  const updatedUsersOnDateChange = users.map((user) => {
+  const usersOnDateChange = users.map((user) => {
     const filteredEvents = filterEvents(user.events, selectedDates);
     const totalEvents = getEventsTotal(filteredEvents);
     return { ...user, totalEvents };
   });
+
+  const total = usersOnDateChange.reduce(
+    (sum, { totalEvents }) => sum + totalEvents,
+    0
+  );
+  const allEventsTotal =
+    total < 10000 ? total.toString() : format('.3s')(total).toLocaleUpperCase();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -36,7 +44,7 @@ const Dashboard = () => {
           <div className="label">Total events</div>
           <Activity size={18} />
         </div>
-        <span className="summary">76K</span>
+        <span className="summary">{allEventsTotal}</span>
       </div>
       <div className="grid-item box shadow">
         <div className="cardHeader">
@@ -65,9 +73,11 @@ const Dashboard = () => {
         <DataTable
           customPageSize={5}
           columns={userColumns}
-          data={updatedUsersOnDateChange}
-          tableType={'users'}
+          data={usersOnDateChange}
+          tableType="user"
+          showTotalFooter={false}
           showSearch={false}
+          showTableFooter={false}
         />
       </div>
     </div>

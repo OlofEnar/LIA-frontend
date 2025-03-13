@@ -46,10 +46,6 @@ const UserPage = () => {
             <strong>Last active: </strong>
             {latestActivity}
           </p>
-          <p>
-            <strong>Logged events: </strong>
-            {user?.totalEvents}
-          </p>
         </div>
       </div>
       <div className="grid-item box-landscape shadow">

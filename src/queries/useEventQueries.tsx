@@ -21,16 +21,3 @@ export const useEventsByName = (eventName: string) =>
     queryFn: () => getEventsByName(eventName),
     enabled: !!eventName,
   });
-
-// Behövs unik query för EventsTable?
-// useQuery<UserEvent[]>({
-//         queryKey: ['eventsTable'],
-//         queryFn: getEvents
-//     });
-
-// Behövs unik query för UserEventsTable?
-// useQuery<UserEvent[]>({
-//     queryKey: ['userEventTable', userId],
-//     queryFn: () => getEventsByUserId(userId),
-//     enabled: !!userId,
-//   });
