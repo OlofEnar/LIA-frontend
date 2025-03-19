@@ -25,6 +25,12 @@ export interface AggregatedEventData {
   date?: string;
   eventTotal: number;
   events?: UserEvent[];
+  movingAverage?: number;
+}
+
+export interface AggregatedEventDetails {
+  hour: string;
+  count: number;
 }
 
 export interface UserEventTable extends AggregatedEventData {
@@ -45,12 +51,11 @@ export interface DownloadJSONProps {
   fileName: string;
 }
 
-export type DateRange = {
-  from: Date | null;
-  to: Date | null;
-};
-
 export type TableUrlPath = {
   userPath: string;
   eventPath: string;
 };
+
+export type InputChangeHandler = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => void;

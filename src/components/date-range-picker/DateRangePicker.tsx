@@ -132,6 +132,7 @@ const DateRangePicker = () => {
               onClick={() => setShowPicker(!showPicker)}
               placeholder="Select date range"
               className={styles.inputField}
+              readOnly
             />
           </div>
         </Popover.Trigger>

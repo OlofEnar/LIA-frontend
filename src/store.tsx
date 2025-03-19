@@ -1,20 +1,15 @@
 import dayjs from 'dayjs';
+import { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
-import { DateRange } from './types/types';
 
 interface UserCountStore {
   userCount: number;
   setUserCount: (count: number) => void;
 }
 
-interface CsvStore {
-  exportData: Array<Record<string, any>>;
-  setExportData: (newData: Array<Record<string, any>>) => void;
-}
-
 interface DateRangeStore {
-  selectedRange: DateRange;
-  setSelectedRange: (range: DateRange) => void;
+  selectedRange?: DateRange;
+  setSelectedRange: (range: DateRange | undefined) => void;
 }
 
 interface SelectedUserIdsStore {
@@ -44,15 +39,4 @@ export const useUserCountStore = create<UserCountStore>((set) => ({
 export const useDateRangeStore = create<DateRangeStore>((set) => ({
   selectedRange: defaultRange,
   setSelectedRange: (range) => set({ selectedRange: range }),
-}));
-
-export const useCsvStore = create<CsvStore>((set) => ({
-  exportData: [],
-  setExportData: (newData) =>
-    set((state) => {
-      if (JSON.stringify(state.exportData) === JSON.stringify(newData)) {
-        return state;
-      }
-      return { exportData: newData };
-    }),
 }));

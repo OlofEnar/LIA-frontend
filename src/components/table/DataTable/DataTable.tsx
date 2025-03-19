@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useSelectedUsersStore } from '../../../store';
 import { useNavigate } from 'react-router';
+import { InputChangeHandler } from '../../../types/types';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +54,7 @@ export function DataTable<TData, TValue>({
   });
   const [searchValue, setSearchValue] = useState('');
 
-  const handleInputChange = (e) => {
+  const handleInputChange: InputChangeHandler = (e) => {
     const value = e.target.value;
     setSearchValue(value);
     table.setGlobalFilter(value);

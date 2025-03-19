@@ -1,10 +1,5 @@
 import dayjs from 'dayjs';
-import { UserEvent } from '../../../types/types';
-
-export interface AggregatedEventDetails {
-  hour: string;
-  count: number;
-}
+import { AggregatedEventDetails, UserEvent } from '../../../types/types';
 
 export const useEventDetailsChart = (userEvents: UserEvent[]) => {
   const hourEvent: Record<string, number> = {};

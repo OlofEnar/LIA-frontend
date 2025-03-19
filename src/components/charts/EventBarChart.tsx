@@ -16,7 +16,7 @@ type BarChartProps = {
   chartData: AggregatedEventData[];
 };
 
-const tickFormatter = (tick) => format('~s')(tick).toUpperCase();
+const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
 
 const EventBarChart = ({ chartData }: BarChartProps) => {
   console.log(chartData);

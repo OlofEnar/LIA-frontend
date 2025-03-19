@@ -13,10 +13,11 @@ import { format } from 'd3-format';
 
 const EventsBarChart = () => {
   const { data: chartData, isLoading, isError, error } = useEventsBarChart();
-  const tickFormatter = (tick) => format('~s')(tick).toUpperCase();
+  const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>An error occurred: {error.message}</div>;
+  if (error instanceof Error && isError)
+    return <div>An error occurred: {error.message}</div>;
 
   return (
     <ResponsiveContainer width="100%" maxHeight={400}>

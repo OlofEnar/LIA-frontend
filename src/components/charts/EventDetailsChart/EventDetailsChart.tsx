@@ -17,7 +17,7 @@ export const EventDetailsChart = ({
 }) => {
   const chartData = useEventDetailsChart(userEvents);
 
-  const tickFormatter = (tick) => format('~s')(tick).toUpperCase();
+  const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
 
   return (
     <>

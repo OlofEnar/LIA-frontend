@@ -5,7 +5,10 @@ import { aggregateEventsByDate, getDateRangeArray } from '../../utils/utils';
 
 export const useEventsBarChart = () => {
   const { selectedRange } = useDateRangeStore();
-  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
+  const selectedDates = getDateRangeArray(
+    selectedRange?.from,
+    selectedRange?.to
+  );
   const { data: userEvents, error, isError, isLoading } = useEventsQuery();
   let chartData: AggregatedEventData[] = [];
   const filteredChartData: AggregatedEventData[] = [];
@@ -19,9 +22,12 @@ export const useEventsBarChart = () => {
     }
   });
 
-  chartData.sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const sortedData = chartData.sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
 
-  return { data: filteredChartData, isLoading, isError, error };
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  });
+
+  return { data: sortedData, isLoading, isError, error };
 };

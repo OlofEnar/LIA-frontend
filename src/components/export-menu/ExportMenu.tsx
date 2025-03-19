@@ -16,9 +16,12 @@ import { getHubspotExportData } from './getHubspotExportData';
 const ExportMenu = () => {
   const { selectedRange } = useDateRangeStore();
   const { selectedUserIds } = useSelectedUsersStore();
-  const fromDate = dayjs(selectedRange.from).format('YYYY-MM-DD');
-  const toDate = dayjs(selectedRange.to).format('YYYY-MM-DD');
-  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
+  const fromDate = dayjs(selectedRange?.from).format('YYYY-MM-DD');
+  const toDate = dayjs(selectedRange?.to).format('YYYY-MM-DD');
+  const selectedDates = getDateRangeArray(
+    selectedRange?.from,
+    selectedRange?.to
+  );
   const fileName = `${fromDate}-${toDate}-User_events`;
   const { data: users = [] } = useUsersQuery();
 
@@ -29,7 +32,7 @@ const ExportMenu = () => {
 
   const handleJsonExport = () => {
     const filteredUsers = filterUsers(selectedUserIds, users);
-    exportJsonToBrowser({ data: filteredUsers });
+    exportJsonToBrowser(filteredUsers);
   };
 
   const handleJsonDownload = () => {

@@ -15,15 +15,23 @@ import { useUserActivityLineChart } from './useUserActivityLineChart';
 import { format } from 'd3-format';
 
 const UserActivityLineChart = ({ userId }: { userId: string }) => {
-  const [windowSize, setWindowSize] = useState(14);
+  const [chartMAWindowSize, setChartMAWindowSize] = useState(14);
 
-  const handleWindowSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWindowSize(Number(e.target.value));
-    console.log(windowSize);
+  const handleChartMAWindowSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setChartMAWindowSize(Number(e.target.value));
+    console.log(chartMAWindowSize);
   };
+  const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
+  const {
+    data: chartData,
+    isLoading,
+    isError,
+    error,
+  } = useUserActivityLineChart(userId, chartMAWindowSize);
 
-  const chartData = useUserActivityLineChart(userId, windowSize);
-  const tickFormatter = (tick) => format('~s')(tick).toUpperCase();
+  if (isLoading) return <div>Loading...</div>;
+  if (error instanceof Error && isError)
+    return <div>An error occurred: {error.message}</div>;
 
   return (
     <>
@@ -33,8 +41,8 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
           <span>Window</span>
           <select
             className="shadow buttonStyle"
-            value={windowSize}
-            onChange={handleWindowSize}
+            value={chartMAWindowSize}
+            onChange={handleChartMAWindowSize}
           >
             {[3, 7, 14, 30, 100].map((windowSizeOption) => (
               <option key={windowSizeOption} value={windowSizeOption}>
@@ -84,7 +92,7 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
             type="monotone"
             dataKey="movingAverage"
             stroke="#82ca9d"
-            name={`Moving Average (${windowSize} days)`}
+            name={`Moving Average (${chartMAWindowSize} days)`}
             strokeDasharray="5 5"
             dot={false}
             connectNulls={true}

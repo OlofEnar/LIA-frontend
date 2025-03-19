@@ -28,7 +28,7 @@ export const downloadJSON = ({ data, fileName }: DownloadJSONProps) => {
   document.body.removeChild(link);
 };
 
-export const exportJsonToBrowser = (data: any): void => {
+export const exportJsonToBrowser = (data: User[]): void => {
   const jsonString = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonString], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -36,8 +36,8 @@ export const exportJsonToBrowser = (data: any): void => {
 };
 
 export function getDateRangeArray(
-  startDate: Date | null,
-  endDate: Date | null
+  startDate: Date | undefined,
+  endDate: Date | undefined
 ): string[] {
   if (!startDate || !endDate) {
     return [];
@@ -94,11 +94,10 @@ export const getLatestEventActivity = (
 };
 
 export function calcMovingAverage(
-  data: { date: string; eventTotal: number }[],
+  data: { date?: string; eventTotal: number }[],
   windowSize: number
 ) {
   const movingAverages: { date: string; movingAverage: number }[] = [];
-  console.log(movingAverages);
 
   for (let i = 0; i < data.length; i++) {
     const start = Math.max(0, i - windowSize + 1);
@@ -106,9 +105,8 @@ export function calcMovingAverage(
     const sum = windowData.reduce((acc, point) => acc + point.eventTotal, 0);
     const avg = sum / windowData.length;
 
-    movingAverages.push({ date: data[i].date, movingAverage: avg });
+    movingAverages.push({ date: data[i].date ?? '', movingAverage: avg });
   }
-
   return movingAverages;
 }
 
@@ -121,6 +119,8 @@ export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
     if (dateMap.has(date)) {
       const aggregated = dateMap.get(date)!;
       aggregated.eventTotal += eventCount;
+
+      aggregated.events ||= [];
       aggregated.events.push(event);
     } else {
       dateMap.set(date, {
@@ -198,7 +198,7 @@ export function getEventsTotal<
 
 export const getUserCount = (events: UserEvent[] = []): number => {
   const uniqueIds = new Set<string>();
-  events.forEach((event) => uniqueIds.add(event.userId));
+  events.forEach((event) => uniqueIds.add(event.userId!));
   return uniqueIds.size;
 };
 
