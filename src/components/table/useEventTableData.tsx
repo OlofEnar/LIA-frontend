@@ -1,8 +1,9 @@
+import { DateRange } from 'react-day-picker';
 import {
   useEventsByIdQuery,
   useEventsQuery,
 } from '../../queries/useEventQueries';
-import { AggregatedEventData, DateRange } from '../../types/types';
+import { AggregatedEventData } from '../../types/types';
 import {
   aggregateEventsByName,
   convertToUserEventTable,
@@ -21,19 +22,7 @@ export const useEventTableData = (
   const eventsByIdQuery = useEventsByIdQuery(userId || '');
   const eventsQuery = useEventsQuery();
 
-  const {
-    data: userEvents,
-    error,
-    isError,
-    isLoading,
-  } = userId ? eventsByIdQuery : eventsQuery;
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>An error occured {error.message}</div>;
-  }
+  const { data: userEvents } = userId ? eventsByIdQuery : eventsQuery;
 
   const filteredEvents = filterEvents(userEvents, selectedDates);
   aggregatedEvents = aggregateEventsByName(filteredEvents);

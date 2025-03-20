@@ -1,5 +1,5 @@
 import * as Separator from '@radix-ui/react-separator';
-import { UserEvent } from '../../../types/types';
+import { AggregatedEventData, UserEvent } from '../../../types/types';
 import styles from './CustomTooltip.module.scss';
 import { TooltipProps } from 'recharts';
 import {
@@ -13,11 +13,9 @@ const CustomTooltip = ({
   label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    const topEvents: UserEvent[] = payload[0].payload.events
-      .sort(
-        (a: { eventCount: number }, b: { eventCount: number }) =>
-          b.eventCount - a.eventCount
-      )
+    const chartData = payload[0].payload as AggregatedEventData;
+    const topEvents: UserEvent[] = (chartData.events ?? [])
+      .sort((a, b) => b.eventCount - a.eventCount)
       .slice(0, 3);
 
     return (
@@ -33,7 +31,7 @@ const CustomTooltip = ({
         <Separator.Root className="SeparatorRoot" />
         <div className="card-header">
           <p>{`${label}`}</p>
-          <p>Total: {`${payload[0].value}`}</p>
+          <p>Total: {String(payload?.[0]?.value)}</p>
         </div>
       </div>
     );

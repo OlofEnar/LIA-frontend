@@ -36,7 +36,7 @@ const EventsBarChart = () => {
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(value) => value.slice(5)}
+          tickFormatter={(value: string) => value.slice(5)}
         />
         <YAxis tickFormatter={tickFormatter} />
         <Tooltip />

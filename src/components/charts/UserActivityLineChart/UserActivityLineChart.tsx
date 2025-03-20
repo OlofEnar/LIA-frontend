@@ -19,7 +19,6 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
 
   const handleChartMAWindowSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setChartMAWindowSize(Number(e.target.value));
-    console.log(chartMAWindowSize);
   };
   const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
   const {
@@ -61,7 +60,7 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(5)}
+            tickFormatter={(value: string) => value.slice(5)}
           />
           <YAxis tickFormatter={tickFormatter} />
           <Tooltip

@@ -19,8 +19,6 @@ type BarChartProps = {
 const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
 
 const EventBarChart = ({ chartData }: BarChartProps) => {
-  console.log(chartData);
-
   if (chartData.length < 3) {
     return (
       <div className={styles.chartWarning}>
@@ -41,7 +39,7 @@ const EventBarChart = ({ chartData }: BarChartProps) => {
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(5)}
+            tickFormatter={(value: string) => value.slice(5)}
           />
           <YAxis tickFormatter={tickFormatter} />
           <Tooltip />

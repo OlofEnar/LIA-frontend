@@ -7,14 +7,10 @@ import styles from './DateRangePicker.module.scss';
 import { ChevronDown } from 'lucide-react';
 import { useDateRangeStore } from '../../store';
 import * as Separator from '@radix-ui/react-separator';
+import { DateRangePreset } from '../../types/types';
 
 const DATE_FORMAT = 'YYYY/MM/DD';
-type Preset =
-  | 'Last 7 days'
-  | 'Last 14 days'
-  | 'Last 30 days'
-  | 'Last 6 months'
-  | 'Custom';
+
 let selectedPreset: string = '';
 
 const DateRangePicker = () => {
@@ -43,7 +39,7 @@ const DateRangePicker = () => {
     }
   };
 
-  const handlePresetSelection = (preset: Preset) => {
+  const handlePresetSelection = (preset: DateRangePreset) => {
     const today = dayjs();
     let fromDate: Date = today.toDate();
     let toDate: Date = today.toDate();
@@ -105,7 +101,6 @@ const DateRangePicker = () => {
   const handleConfirm = () => {
     setSelectedRange(tempRange);
     setCalendarOpen(false);
-    console.log(tempRange);
     if (!isPreset) {
       selectedPreset = 'Custom';
     }

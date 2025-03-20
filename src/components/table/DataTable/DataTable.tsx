@@ -9,6 +9,7 @@ import {
   PaginationState,
   getFilteredRowModel,
   filterFns,
+  Row,
 } from '@tanstack/react-table';
 import '../../../types/types';
 import './DataTable.scss';
@@ -24,19 +25,25 @@ import {
 } from 'lucide-react';
 import { useSelectedUsersStore } from '../../../store';
 import { useNavigate } from 'react-router';
-import { InputChangeHandler } from '../../../types/types';
+import {
+  InputChangeHandler,
+  TableData,
+  TableType,
+  User,
+  UserEventTable,
+} from '../../../types/types';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   showTotalFooter?: boolean;
-  tableType: string;
+  tableType: TableType;
   customPageSize?: number;
   showSearch?: boolean;
   showTableFooter?: boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends TableData, TValue>({
   columns,
   data,
   showTotalFooter = false,
@@ -58,10 +65,9 @@ export function DataTable<TData, TValue>({
     const value = e.target.value;
     setSearchValue(value);
     table.setGlobalFilter(value);
-    console.log(value);
   };
 
-  const table = useReactTable({
+  const table = useReactTable<TData>({
     data,
     columns,
     enableRowSelection: true,
@@ -81,35 +87,40 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const urlPath = (tableType: string, row: any) =>
-    tableType === 'user'
-      ? `/users/${row.original.id}`
-      : tableType === 'event'
-      ? `/events/${row.original.eventName}`
-      : '/';
+  const urlPath = (tableType: TableType, row: Row<TData>) => {
+    if (tableType === 'user') {
+      const user = row.original as User;
+      return `/users/${user.id}`;
+    }
+    if (tableType === 'event') {
+      const event = row.original as UserEventTable;
+      return `/events/${event.eventName}`;
+    }
+    return '/';
+  };
 
   const navigate = useNavigate();
+
   const handleRowClick = (
-    tableType: string,
-    row: any,
+    tableType: 'user' | 'event',
+    row: Row<TData>,
     event: React.MouseEvent
   ) => {
-    if ((event.target as HTMLElement).closest('input[type="checkbox"]')) {
-      return;
-    }
+    if ((event.target as HTMLElement).closest('input[type="checkbox"]')) return;
     navigate(urlPath(tableType, row));
   };
 
-  useEffect(() => {
-    const selectedIds = Object.keys(table.getState().rowSelection).map(
-      (rowId) => {
-        const row = table.getRow(rowId);
-        return row?.original?.id;
-      }
-    );
+  const currentRowSelection = table.getState().rowSelection;
 
+  useEffect(() => {
+    if (tableType !== 'user') return;
+
+    const selectedIds = Object.keys(currentRowSelection).map((rowId) => {
+      const row = table.getRow(rowId) as Row<User>;
+      return row?.original.id;
+    });
     setSelectedUserIds(selectedIds);
-  }, [table.getState().rowSelection, setSelectedUserIds]);
+  }, [currentRowSelection, setSelectedUserIds, table, tableType]);
 
   return (
     <div>

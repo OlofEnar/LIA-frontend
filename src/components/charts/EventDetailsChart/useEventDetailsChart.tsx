@@ -16,8 +16,6 @@ export const useEventDetailsChart = (userEvents: UserEvent[]) => {
     });
   });
 
-  console.log(hourEvent);
-
   const sortedHours = Object.keys(hourEvent).sort();
   const chartData: AggregatedEventDetails[] = sortedHours.map((hour) => ({
     hour,

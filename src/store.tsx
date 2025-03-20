@@ -8,8 +8,8 @@ interface UserCountStore {
 }
 
 interface DateRangeStore {
-  selectedRange?: DateRange;
-  setSelectedRange: (range: DateRange | undefined) => void;
+  selectedRange: DateRange;
+  setSelectedRange: (range: DateRange) => void;
 }
 
 interface SelectedUserIdsStore {
