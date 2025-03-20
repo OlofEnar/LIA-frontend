@@ -22,7 +22,7 @@ export const useEventsBarChart = () => {
     }
   });
 
-  const sortedData = chartData.sort((a, b) => {
+  const sortedData = filteredChartData.sort((a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
 

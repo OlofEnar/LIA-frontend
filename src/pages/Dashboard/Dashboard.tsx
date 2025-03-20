@@ -33,7 +33,7 @@ const Dashboard = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (isError) {
+  if (error instanceof Error && isError) {
     return <div>An error occured {error.message}</div>;
   }
 

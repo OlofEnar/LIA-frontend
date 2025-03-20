@@ -51,10 +51,15 @@ export interface DownloadJSONProps {
   fileName: string;
 }
 
-export type TableUrlPath = {
-  userPath: string;
-  eventPath: string;
-};
+export type TableData = User | UserEventTable;
+export type TableType = 'user' | 'event';
+
+export type DateRangePreset =
+  | 'Last 7 days'
+  | 'Last 14 days'
+  | 'Last 30 days'
+  | 'Last 6 months'
+  | 'Custom';
 
 export type InputChangeHandler = (
   e: React.ChangeEvent<HTMLInputElement>

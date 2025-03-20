@@ -3,7 +3,7 @@ import { useDateRangeStore } from '../../store';
 import DataTable from './DataTable/DataTable';
 import { eventColumns } from './columns';
 
-export const DisplayUserEventTable = ({ userId }: { userId: string }) => {
+export const DisplayEventsByUserTable = ({ userId }: { userId: string }) => {
   const { selectedRange } = useDateRangeStore();
   const { data: chartData = [], totalEvents } = useEventTableData(
     selectedRange,

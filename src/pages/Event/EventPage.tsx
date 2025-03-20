@@ -1,5 +1,5 @@
 import * as Separator from '@radix-ui/react-separator';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './EventPage.module.scss';
 import { Settings } from 'lucide-react';
 import { useDateRangeStore } from '../../store';
@@ -17,22 +17,32 @@ import { useEventsByName } from '../../queries/useEventQueries';
 import OptionsModal from '../../components/options-modal/OptionsModal';
 import { EventDetailsChart } from '../../components/charts/EventDetailsChart/EventDetailsChart';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 
 const EventPage = () => {
   const { selectedEventName } = useParams<{ selectedEventName: string }>();
   const { selectedRange } = useDateRangeStore();
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
+  const navigate = useNavigate();
   let userCount: number = 0;
   let chartData: AggregatedEventData[] = [];
   let filteredEvents: UserEvent[] = [];
   let latestActivity: UserEvent | null = null;
+
+  // Here we need to do a check on a list of valid EventNames.
+  // As of now you can pass any string and all the queries will run
+  useEffect(() => {
+    if (!selectedEventName) {
+      navigate('/');
+    }
+  }, [selectedEventName, navigate]);
 
   const {
     data: userEvents,
     error,
     isError,
     isLoading,
-  } = useEventsByName(selectedEventName);
+  } = useEventsByName(selectedEventName!);
 
   if (selectedEventName) {
     latestActivity = getLatestEventActivity(userEvents, selectedEventName);
@@ -52,7 +62,7 @@ const EventPage = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (isError) {
+  if (error instanceof Error && isError) {
     return <div>An error occured {error.message}</div>;
   }
 
