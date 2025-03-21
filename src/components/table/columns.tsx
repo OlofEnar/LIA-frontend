@@ -1,29 +1,97 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { User } from "../../types/types"
-import { ExternalLink } from 'lucide-react';
-
-// export const userColumns = (navigate: (path: string) => void): ColumnDef<User>[] => [
+import { ColumnDef } from '@tanstack/react-table';
+import { User, UserEventTable } from '../../types/types';
+import React, { HTMLProps } from 'react';
 
 export const userColumns: ColumnDef<User>[] = [
-    { 
-        accessorKey: 'id',
-        header: 'ID',
-        cell: (info) => (info.getValue() as string).slice(0,4),
-
-    },
-    { accessorKey: 'score', header: 'Score'},
-    { accessorKey: 'dailyEvents', header: 'Daily Events'},
-    { accessorKey: 'mostUsedDailyEvent', header: 'Most used'},
-    // { 
-    //     id: 'link', 
-    //     accessorKey: 'actions', 
-    //     header: 'Actions',
-    //     cell: ({ row }) => (
-    //         <button
-    //         onClick={() => navigate('/users/${row.original.id}')}
-    //         style={{background : 'none', border: 'none', cursor: 'pointer'}}>
-    //        <ExternalLink />
-    //         </button>
-    //     ),
-    // },
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="px-1">
+        <IndeterminateCheckbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler(),
+          }}
+        />
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'id',
+    header: 'ID',
+    cell: (info) => info.getValue() as string,
+  },
+  { accessorKey: 'userCountry', header: 'Country' },
+  { accessorKey: 'clientVersion', header: 'Client' },
+  { accessorKey: 'totalEvents', header: 'Events' },
 ];
+
+export const eventColumns = (
+  totalEvents: number
+): ColumnDef<UserEventTable>[] => [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <IndeterminateCheckbox
+        {...{
+          checked: table.getIsAllRowsSelected(),
+          indeterminate: table.getIsSomeRowsSelected(),
+          onChange: table.getToggleAllRowsSelectedHandler(),
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="px-1">
+        <IndeterminateCheckbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler(),
+          }}
+        />
+      </div>
+    ),
+  },
+  { accessorKey: 'eventName', header: 'Event' },
+  { accessorKey: 'eventDistribution', header: '%', footer: 'Total' },
+  {
+    accessorKey: 'eventTotal',
+    header: 'Count',
+    footer: () => totalEvents,
+  },
+];
+
+function IndeterminateCheckbox({
+  indeterminate,
+  className = '',
+  ...rest
+}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+  const ref = React.useRef<HTMLInputElement>(null!);
+
+  React.useEffect(() => {
+    if (typeof indeterminate === 'boolean') {
+      ref.current.indeterminate = !rest.checked && indeterminate;
+    }
+  }, [ref, indeterminate, rest.checked]);
+
+  return (
+    <input
+      type="checkbox"
+      ref={ref}
+      className={className + ' cursor-pointer'}
+      {...rest}
+    />
+  );
+}

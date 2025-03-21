@@ -1,10 +1,10 @@
 @use '../../assets/styles/variables';
 @use '../../assets/styles/responsive';
 
-.dashboard {
+.single {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: minmax(140px, auto);
 
     @include responsive.xl {
@@ -13,5 +13,18 @@
 
     @include responsive.sm {
         grid-template-columns: repeat(1, 1fr);
+    }
+
+    .cardHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .cardDetails {
+        p {
+            margin-bottom: 1rem;
+        }
     }
 }

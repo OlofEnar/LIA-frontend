@@ -1,5 +1,5 @@
-@import './variables.scss';
-@import './responsive.scss';
+@use './variables';
+@use './responsive';
 
 body {
     font-family: 'Inter', sans-serif;
@@ -20,7 +20,7 @@ a {
     padding: 40px;
     border-radius: 15px;
     background-color: 20 66% 98%;
-    border: 1px solid $grey;
+    border: 1px solid variables.$grey;
 }
 
 .box {
@@ -49,10 +49,99 @@ a {
     padding: 20px;
 }
 
-.container {
+.cardHeader {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .shadow {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+}
+
+.pill {
+    font-size: 0.75rem;
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+.btn {
+      background-color: variables.$clr-primary;
+      border-radius: 8px;
+      border-style: none;
+      box-sizing: border-box;
+      color: #FFFFFF;
+      cursor: pointer;
+      height: 40px;
+      list-style: none;
+      padding: 10px 16px;
+      text-align: center;
+      text-decoration: none;
+      transition: color 100ms;
+      vertical-align: baseline;
+      touch-action: manipulation;
+}
+
+.btn-primary {
+    &:hover,
+    &:focus {
+      background-color: darken(variables.$clr-primary, $amount: 5%);
+    }
+}
+
+.btn-alt {
+    background-color: unset;
+    border: variables.$clr-primary 2px solid;
+    color: variables.$clr-primary;
+    font-weight: 600;
+
+    &:hover,
+    &:focus {
+      color: darken(variables.$clr-primary, $amount: 20%);
+    }
+}
+
+.SeparatorRoot {
+    margin: 15px 0;
+    background-color: variables.$grey;
+}
+
+.SeparatorRoot[data-orientation="horizontal"] {
+    height: 1px;
+    width: 100%;
+}
+.SeparatorRoot[data-orientation="vertical"] {
+    height: 40px;
+    width: 2px;
+    margin: 0 15px;
+}
+
+.inputContainer {
+    width: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    
+    .inputField {
+        width: 100%;
+        padding: 1rem 1rem 1rem 2.5rem ;
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px solid variables.$grey;
+        font-size: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+    }
+
+    .icon {
+        position: absolute;
+        left: 1rem;
+        pointer-events: none; 
+    }
 }

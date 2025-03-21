@@ -1,0 +1,72 @@
+@use '../../assets/styles/variables';
+
+.inputContainer {
+    width: 210px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+    .inputField {
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        text-decoration-line: underline;
+        font-size: 1rem;
+    }
+
+    .icon {
+        position: absolute;
+        right: 0;
+        pointer-events: none; 
+    }
+}
+
+.popoverContent {
+    top: 45px;
+    position: relative;
+    z-Index:10;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px -1px rgba(0, 0, 0, .1);
+    border-radius: variables.$border-radius;
+
+    .calendarFooter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+            margin-left: 0.5rem;
+        }
+
+        .datePreset {
+            border: none;
+            background-color: inherit;
+            cursor: pointer;
+            display: inline-block;
+            padding: 0 0.5rem;
+        }
+    }
+
+    .PopoverClose {
+        border-radius: 100%;
+        height: 25px;
+        width: 25px;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+    }
+}
+    .datePicker {
+        font-size: 0.75rem;
+    }
+
+    .rdp-selected {
+        font-size: inherit !important;
+        font-weight: 600;
+    }
+
+    .rdp-range_start, .rdp-range_end, .rdp-day_button {
+        background-color: variables.$clr-primary;
+    }
