@@ -14,6 +14,7 @@ import { format } from 'd3-format';
 const EventsBarChart = () => {
   const { data: chartData, isLoading, isError, error } = useEventsBarChart();
   const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
+  console.log(chartData);
 
   if (isLoading) return <div>Loading...</div>;
   if (error instanceof Error && isError)
@@ -32,7 +33,7 @@ const EventsBarChart = () => {
       >
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="date"
+          dataKey="eventDate"
           tickLine={false}
           tickMargin={10}
           axisLine={false}

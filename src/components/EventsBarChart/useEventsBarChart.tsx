@@ -16,17 +16,17 @@ export const useEventsBarChart = () => {
   chartData = aggregateEventsByDate(userEvents);
 
   selectedDates.forEach((date) => {
-    const event = chartData.find((event) => event.date === date);
+    const event = chartData.find((event) => event.eventDate === date);
     if (event) {
       filteredChartData.push(event);
     }
   });
 
   const sortedData = filteredChartData.sort((a, b) => {
-    if (!a.date) return 1;
-    if (!b.date) return -1;
+    if (!a.eventDate) return 1;
+    if (!b.eventDate) return -1;
 
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
+    return new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime();
   });
 
   return { data: sortedData, isLoading, isError, error };

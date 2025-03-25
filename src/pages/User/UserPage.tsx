@@ -5,9 +5,9 @@ import styles from './UserPage.module.scss';
 import { Settings2 } from 'lucide-react';
 import { getLatestUserActivity, isValidGuid } from '../../utils/utils';
 import { useUserQuery } from '../../queries/useUserQueries';
-import { useEventsByIdQuery } from '../../queries/useEventQueries';
 import { DisplayEventsByUserTable } from '../../components/table/DisplayEventsByUserTable';
 import { useEffect } from 'react';
+import { useEventsByUserIdQuery } from '../../queries/useEventQueries';
 
 const UserPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +20,7 @@ const UserPage = () => {
   }, [id, navigate]);
 
   const { data: user, error, isError, isLoading } = useUserQuery(id!);
-  const { data: userEvent } = useEventsByIdQuery(id!);
+  const { data: userEvent } = useEventsByUserIdQuery(id!);
 
   if (isLoading) {
     return <div>Loading...</div>;

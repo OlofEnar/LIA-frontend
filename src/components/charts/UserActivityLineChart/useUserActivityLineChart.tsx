@@ -1,4 +1,4 @@
-import { useEventsByIdQuery } from '../../../queries/useEventQueries';
+import { useEventsByUserIdQuery } from '../../../queries/useEventQueries';
 import { useDateRangeStore } from '../../../store';
 import { AggregatedEventData, UserEvent } from '../../../types/types';
 import {
@@ -22,7 +22,7 @@ export const useUserActivityLineChart = (
     error,
     isError,
     isLoading,
-  } = useEventsByIdQuery(userId);
+  } = useEventsByUserIdQuery(userId);
   let chartData: AggregatedEventData[] = [];
   let filteredChartData: UserEvent[] = [];
 
@@ -31,7 +31,8 @@ export const useUserActivityLineChart = (
 
   chartData.sort(
     (a, b) =>
-      new Date(a.date ?? '').getTime() - new Date(b.date ?? '').getTime()
+      new Date(a.eventDate ?? '').getTime() -
+      new Date(b.eventDate ?? '').getTime()
   );
 
   const movingAverageData = calcMovingAverage(chartData, windowSize);

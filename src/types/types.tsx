@@ -1,14 +1,14 @@
 export interface User {
   id: string;
-  clientVersion: string[];
-  userCountry: string[];
+  clientVersion: string;
+  userCountry: string;
   totalEvents: number;
   events?: UserEvent[];
 }
 
 export interface UserEvent {
-  id?: number;
-  date: string;
+  eventId?: number;
+  eventDate: string;
   eventName: string;
   eventCount: number;
   userId?: string;
@@ -22,7 +22,7 @@ export interface EventDetails {
 
 export interface AggregatedEventData {
   eventName?: string;
-  date?: string;
+  eventDate?: string;
   eventTotal: number;
   events?: UserEvent[];
   movingAverage?: number;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRange, DayPicker } from 'react-day-picker';
 import dayjs from 'dayjs';
 import * as Popover from '@radix-ui/react-popover';
@@ -11,15 +11,14 @@ import { DateRangePreset } from '../../types/types';
 
 const DATE_FORMAT = 'YYYY/MM/DD';
 
-let selectedPreset: string = '';
-
 const DateRangePicker = () => {
   const { selectedRange, setSelectedRange } = useDateRangeStore();
-  const [showPicker, setShowPicker] = useState<boolean>(false);
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
-  const [isPreset, setIsPreset] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [tempRange, setTempRange] = useState<DateRange>();
+  const [selectedPreset, setSelectedPreset] = useState<string>('');
+
+  const formatDate = (date: Date) => dayjs(date).format(DATE_FORMAT);
 
   useEffect(() => {
     handlePresetSelection('Last 30 days');
@@ -27,89 +26,49 @@ const DateRangePicker = () => {
 
   const handleRangeChange = (range: DateRange | undefined) => {
     if (range) {
-      setIsPreset(false);
       setTempRange({ from: range.from, to: range.to });
       setInputValue(
         range.from && range.to
-          ? `${dayjs(range.from).format(DATE_FORMAT)} – ${dayjs(
-              range.to
-            ).format(DATE_FORMAT)}`
+          ? `${formatDate(range.from)} – ${formatDate(range.to)}`
           : ''
       );
     }
+    setSelectedPreset('Custom');
   };
 
   const handlePresetSelection = (preset: DateRangePreset) => {
     const today = dayjs();
-    let fromDate: Date = today.toDate();
-    let toDate: Date = today.toDate();
-    setIsPreset(true);
+    let fromDate = today.toDate();
+    let toDate = today.toDate();
+    setSelectedPreset(preset);
 
     switch (preset) {
       case 'Last 7 days':
         fromDate = today.subtract(6, 'day').toDate();
-        toDate = today.toDate();
-        selectedPreset = preset;
         break;
-
       case 'Last 14 days':
         fromDate = today.subtract(13, 'day').toDate();
-        toDate = today.toDate();
-        selectedPreset = preset;
         break;
-
       case 'Last 30 days':
         fromDate = today.subtract(29, 'day').toDate();
-        toDate = today.toDate();
-        selectedPreset = preset;
         break;
-
       case 'Last 6 months':
         fromDate = today.subtract(179, 'day').toDate();
-        toDate = today.toDate();
-        selectedPreset = preset;
-        break;
-
-      default:
         break;
     }
-    console.log(selectedPreset);
 
     setTempRange({ from: fromDate, to: toDate });
-    setInputValue(
-      `${dayjs(fromDate).format(DATE_FORMAT)} – ${dayjs(toDate).format(
-        DATE_FORMAT
-      )}`
-    );
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    const dates = e.target.value
-      .split(' – ')
-      .map((date) => dayjs(date, DATE_FORMAT).toDate());
-    if (
-      dates.length === 2 &&
-      !isNaN(dates[0].getTime()) &&
-      !isNaN(dates[1].getTime())
-    ) {
-      setSelectedRange({ from: dates[0], to: dates[1] });
-    }
+    setInputValue(`${formatDate(fromDate)} – ${formatDate(toDate)}`);
   };
 
   const handleConfirm = () => {
     setSelectedRange(tempRange);
     setCalendarOpen(false);
-    if (!isPreset) {
-      selectedPreset = 'Custom';
-    }
   };
 
   const handleCancel = () => {
-    selectedPreset = '';
+    setTempRange(selectedRange);
     setCalendarOpen(false);
-    setSelectedRange(selectedRange); // Revert to initial range not working when cancelling
   };
 
   return (
@@ -123,8 +82,7 @@ const DateRangePicker = () => {
             <input
               type="text"
               value={inputValue}
-              onChange={handleInputChange}
-              onClick={() => setShowPicker(!showPicker)}
+              onClick={() => setCalendarOpen(!calendarOpen)}
               placeholder="Select date range"
               className={styles.inputField}
               readOnly
@@ -144,32 +102,20 @@ const DateRangePicker = () => {
             />
             <Separator.Root className="SeparatorRoot" />
             <div className={styles.calendarFooter}>
-              <div className={styles.datePresets}>
+              {[
+                'Last 7 days',
+                'Last 14 days',
+                'Last 30 days',
+                'Last 6 months',
+              ].map((preset) => (
                 <button
+                  key={preset}
                   className={styles.datePreset}
-                  onClick={() => handlePresetSelection('Last 7 days')}
+                  onClick={() => handlePresetSelection(preset)}
                 >
-                  Last 7 days
+                  {preset}
                 </button>
-                <button
-                  className={styles.datePreset}
-                  onClick={() => handlePresetSelection('Last 14 days')}
-                >
-                  Last 14 days
-                </button>
-                <button
-                  className={styles.datePreset}
-                  onClick={() => handlePresetSelection('Last 30 days')}
-                >
-                  Last 30 days
-                </button>
-                <button
-                  className={styles.datePreset}
-                  onClick={() => handlePresetSelection('Last 6 months')}
-                >
-                  Last 6 months
-                </button>
-              </div>
+              ))}
               <div>
                 <button className="btn btn-alt" onClick={handleCancel}>
                   Cancel
