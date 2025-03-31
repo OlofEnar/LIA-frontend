@@ -19,7 +19,7 @@ export const useEventTableData = (
   const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
   let aggregatedEvents: AggregatedEventData[] = [];
   let totalEvents: number = 0;
-  const eventsByIdQuery = useEventsByUserIdQuery(userId || '');
+  const eventsByIdQuery = useEventsByUserIdQuery(userId);
   const eventsQuery = useEventsQuery();
 
   const { data: userEvents } = userId ? eventsByIdQuery : eventsQuery;
