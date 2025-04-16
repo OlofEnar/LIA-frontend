@@ -13,14 +13,7 @@ export const getHubspotExportData = (
 ) => {
   const userMap = new Map(users.map((user) => [user.id, user]));
   const usersToExport: any[] = [];
-  const selectedEventNames: string[] = [
-    'ApplicationStarted',
-    'AssortmentAdded',
-    'ChangeMainView',
-    'CreatePDFSummary',
-    'LoadProjectStandalone',
-    'UserLoggedinStandalone',
-  ];
+  const selectedEventNames: string[] = [];
 
   userIdsToExport.forEach((userId) => {
     const user = userMap.get(userId);
