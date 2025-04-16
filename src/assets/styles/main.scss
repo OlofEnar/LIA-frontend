@@ -54,6 +54,12 @@ a {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+
+    .pageSize {
+        span {
+            margin-right: 0.5rem;
+        }
+    }
 }
 
 .shadow {

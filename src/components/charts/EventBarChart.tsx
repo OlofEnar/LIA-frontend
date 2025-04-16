@@ -35,7 +35,7 @@ const EventBarChart = ({ chartData }: BarChartProps) => {
         >
           <CartesianGrid vertical={false} />
           <XAxis
-            dataKey="date"
+            dataKey="eventDate"
             tickLine={false}
             axisLine={false}
             tickMargin={8}

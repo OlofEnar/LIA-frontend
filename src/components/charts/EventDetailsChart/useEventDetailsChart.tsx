@@ -1,26 +1,16 @@
-import dayjs from 'dayjs';
-import { AggregatedEventDetails, UserEvent } from '../../../types/types';
+import { useAggregatedTimestampsByHour } from '../../../queries/useEventQueries';
+import { useDateRangeStore } from '../../../store';
+import { formatDateRange } from '../../../utils/utils';
 
-export const useEventDetailsChart = (userEvents: UserEvent[]) => {
-  const hourEvent: Record<string, number> = {};
+export const useEventDetailsChart = (eventName: string) => {
+  const { selectedRange } = useDateRangeStore();
+  const { startDate, endDate } = formatDateRange(selectedRange);
 
-  for (let i = 0; i < 24; i++) {
-    const hour = dayjs().hour(i).format('HH');
-    hourEvent[hour] = 0;
-  }
+  const { data, error, isError, isLoading } = useAggregatedTimestampsByHour(
+    startDate,
+    endDate,
+    eventName
+  );
 
-  userEvents?.forEach((userEvent) => {
-    userEvent.eventDetails?.forEach((detail) => {
-      const hour = dayjs(detail.timestamp).format('HH');
-      hourEvent[hour] += 1;
-    });
-  });
-
-  const sortedHours = Object.keys(hourEvent).sort();
-  const chartData: AggregatedEventDetails[] = sortedHours.map((hour) => ({
-    hour,
-    count: hourEvent[hour],
-  }));
-
-  return chartData;
+  return { data, isLoading, isError, error };
 };

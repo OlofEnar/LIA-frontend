@@ -1,32 +1,22 @@
 import './Dashboard.scss';
-import { ArrowDown, ArrowUp, Activity } from 'lucide-react';
+import { ArrowDown, ArrowUp, Activity, Settings2 } from 'lucide-react';
 import EventsBarChart from '../../components/EventsBarChart/EventsBarChart';
-import { useUsersQuery } from '../../queries/useUserQueries';
+import { useAllUsersWithAggregatedEvents } from '../../queries/useUserQueries';
 import DataTable from '../../components/table/DataTable/DataTable';
 import { userColumns } from '../../components/table/columns';
-import {
-  filterEvents,
-  getDateRangeArray,
-  getEventsTotal,
-} from '../../utils/utils';
+import { formatDateRange } from '../../utils/utils';
 import { useDateRangeStore } from '../../store';
 import { format } from 'd3-format';
 
 const Dashboard = () => {
-  const { data: users = [], error, isError, isLoading } = useUsersQuery();
   const { selectedRange } = useDateRangeStore();
-  const selectedDates = getDateRangeArray(selectedRange.from, selectedRange.to);
-
-  const usersOnDateChange = users.map((user) => {
-    const filteredEvents = filterEvents(user.events, selectedDates);
-    const totalEvents = getEventsTotal(filteredEvents);
-    return { ...user, totalEvents };
-  });
-
-  const total = usersOnDateChange.reduce(
-    (sum, { totalEvents }) => sum + totalEvents,
-    0
+  const { startDate, endDate } = formatDateRange(selectedRange);
+  const { data, error, isError, isLoading } = useAllUsersWithAggregatedEvents(
+    startDate,
+    endDate
   );
+
+  const total: number = data?.totalEvents;
   const allEventsTotal =
     total < 10000 ? total.toString() : format('.3s')(total).toLocaleUpperCase();
 
@@ -67,13 +57,21 @@ const Dashboard = () => {
         <span className="summary">34</span>
       </div>
       <div className="grid-item box-landscape shadow">
+        <div className="cardHeader">
+          <div className="label">Events</div>
+          <Settings2 size={22} strokeWidth={1.5} />
+        </div>
         <EventsBarChart />
       </div>
       <div className="grid-item box-landscape shadow">
+        <div className="cardHeader">
+          <div className="label">Users</div>
+          <Settings2 size={22} strokeWidth={1.5} />
+        </div>
         <DataTable
-          customPageSize={5}
-          columns={userColumns}
-          data={usersOnDateChange}
+          customPageSize={10}
+          columns={userColumns()}
+          data={data?.aggregatedUsers}
           tableType="user"
           showTotalFooter={false}
           showSearch={false}

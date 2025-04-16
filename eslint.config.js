@@ -43,7 +43,7 @@ export default tseslint.config(
       'react-refresh/only-export-components': 'warn',
 
       // Optional strict or stylistic rules
-      'no-console': 'warn',
+      // 'no-console': 'warn',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   }

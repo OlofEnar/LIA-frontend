@@ -10,7 +10,6 @@ import {
   filterUsers,
   getDateRangeArray,
 } from '../../utils/utils';
-import { useUsersQuery } from '../../queries/useUserQueries';
 import { getHubspotExportData } from './getHubspotExportData';
 
 const ExportMenu = () => {
@@ -23,7 +22,6 @@ const ExportMenu = () => {
     selectedRange?.to
   );
   const fileName = `${fromDate}-${toDate}-User_events`;
-  const { data: users = [] } = useUsersQuery();
 
   const csvConfig = mkConfig({
     useKeysAsHeaders: true,

@@ -7,17 +7,20 @@ import {
   Area,
 } from 'recharts';
 import { useEventDetailsChart } from './useEventDetailsChart';
-import { UserEvent } from '../../../types/types';
 import { format } from 'd3-format';
 
-export const EventDetailsChart = ({
-  userEvents,
-}: {
-  userEvents: UserEvent[];
-}) => {
-  const chartData = useEventDetailsChart(userEvents);
+export const EventDetailsChart = ({ eventName }: { eventName: string }) => {
+  const { data, error, isError, isLoading } = useEventDetailsChart(eventName);
 
   const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError && error instanceof Error) {
+    return <div>An error occurred: {error.message}</div>;
+  }
 
   return (
     <>
@@ -25,7 +28,7 @@ export const EventDetailsChart = ({
         <AreaChart
           width={730}
           height={250}
-          data={chartData}
+          data={data}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <defs>
@@ -40,7 +43,7 @@ export const EventDetailsChart = ({
           <Area
             animationDuration={400}
             type="monotone"
-            dataKey="count"
+            dataKey="eventCount"
             stroke="#82ca9d"
             fillOpacity={1}
             fill="url(#count)"

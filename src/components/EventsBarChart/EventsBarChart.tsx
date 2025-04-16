@@ -8,11 +8,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { useEventsBarChart } from './useEventsBarChart';
 import { format } from 'd3-format';
+import { useAggregatedEventsByDate } from '../../queries/useEventQueries';
+import { useDateRangeStore } from '../../store';
+import { formatDateRange } from '../../utils/utils';
 
 const EventsBarChart = () => {
-  const { data: chartData, isLoading, isError, error } = useEventsBarChart();
+  const { selectedRange } = useDateRangeStore();
+  const { startDate, endDate } = formatDateRange(selectedRange);
+
+  const { data, error, isError, isLoading } = useAggregatedEventsByDate(
+    startDate,
+    endDate
+  );
   const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
 
   if (isLoading) return <div>Loading...</div>;
@@ -22,7 +30,7 @@ const EventsBarChart = () => {
   return (
     <ResponsiveContainer width="100%" maxHeight={400}>
       <BarChart
-        data={chartData}
+        data={data?.aggregatedEvents}
         margin={{
           top: 5,
           right: 30,
@@ -32,7 +40,7 @@ const EventsBarChart = () => {
       >
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="date"
+          dataKey="eventDate"
           tickLine={false}
           tickMargin={10}
           axisLine={false}

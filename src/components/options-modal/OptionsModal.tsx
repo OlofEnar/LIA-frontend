@@ -2,11 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import styles from './OptionsModal.module.scss';
 import { Settings, Settings2 } from 'lucide-react';
 
-type OptionsModalProps = {
-  isGlobal: boolean;
-};
-
-const OptionsModal = ({ isGlobal }: OptionsModalProps) => {
+const OptionsModal = ({ isGlobal }: { isGlobal: boolean }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>

@@ -1,9 +1,9 @@
+import { DateRange } from 'react-day-picker';
 import {
   AggregatedEventData,
   DownloadJSONProps,
   User,
   UserEvent,
-  UserEventTable,
 } from '../types/types';
 import dayjs from 'dayjs';
 
@@ -58,15 +58,15 @@ export const getLatestUserActivity = (
   if (events.length === 0) return null;
 
   const latestEvent = events.reduce((latest, current) => {
-    if (!latest.date || !current.date) return latest;
+    if (!latest.eventDate || !current.eventDate) return latest;
 
-    const latestDate = new Date(latest.date);
-    const currentDate = new Date(current.date);
+    const latestDate = new Date(latest.eventDate);
+    const currentDate = new Date(current.eventDate);
 
     return currentDate > latestDate ? current : latest;
   });
 
-  return `${latestEvent.date} (${latestEvent.eventName})`;
+  return `${latestEvent.eventDate} (${latestEvent.eventName})`;
 };
 
 export const getLatestEventActivity = (
@@ -82,10 +82,10 @@ export const getLatestEventActivity = (
   if (filteredEvents.length === 0) return null;
 
   const latestEvent = events.reduce((latest, current) => {
-    if (!latest.date || !current.date) return latest;
+    if (!latest.eventDate || !current.eventDate) return latest;
 
-    const latestDate = new Date(latest.date);
-    const currentDate = new Date(current.date);
+    const latestDate = new Date(latest.eventDate);
+    const currentDate = new Date(current.eventDate);
 
     return currentDate > latestDate ? current : latest;
   });
@@ -94,7 +94,7 @@ export const getLatestEventActivity = (
 };
 
 export function calcMovingAverage(
-  data: { date?: string; eventTotal: number }[],
+  data: { eventDate?: string; eventTotal: number }[],
   windowSize: number
 ) {
   const movingAverages: { date: string; movingAverage: number }[] = [];
@@ -114,17 +114,17 @@ export const aggregateEventsByDate = (userEvents: UserEvent[] = []) => {
   const dateMap = new Map<string, AggregatedEventData>();
 
   userEvents.forEach((event) => {
-    const { date, eventCount } = event;
+    const { eventDate, eventCount } = event;
 
-    if (dateMap.has(date)) {
-      const aggregated = dateMap.get(date)!;
+    if (dateMap.has(eventDate)) {
+      const aggregated = dateMap.get(eventDate)!;
       aggregated.eventTotal += eventCount;
 
       aggregated.events ||= [];
       aggregated.events.push(event);
     } else {
-      dateMap.set(date, {
-        date,
+      dateMap.set(eventDate, {
+        eventDate,
         eventTotal: eventCount,
         events: [event],
       });
@@ -146,7 +146,7 @@ export const aggregateEventsByName = (userEvents: UserEvent[] = []) => {
     } else {
       nameMap.set(name, {
         eventName: name,
-        date: event.date,
+        eventDate: event.eventDate,
         eventTotal: event.eventCount,
         events: [event],
       });
@@ -162,7 +162,7 @@ export const filterEvents = (
 ) => {
   return userEvents.filter(
     (event) =>
-      (selectedDates.length === 0 || selectedDates.includes(event.date)) &&
+      (selectedDates.length === 0 || selectedDates.includes(event.eventDate)) &&
       (eventNames.length === 0 || eventNames.includes(event.eventName))
   );
 };
@@ -175,17 +175,6 @@ export const filterUsers = (
     (user) => selectedUsers.length === 0 || selectedUsers.includes(user.id)
   );
 };
-
-export function convertToUserEventTable(
-  totalEvents: number,
-  data: AggregatedEventData[]
-): UserEventTable[] {
-  return data.map((event) => ({
-    ...event,
-    eventDistribution:
-      ((event.eventTotal / totalEvents) * 100).toFixed(1) + '%',
-  }));
-}
 
 export function getEventsTotal<
   T extends { eventCount?: number; eventTotal?: number }
@@ -207,3 +196,10 @@ export const isValidGuid = (guid: string): boolean => {
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
   return guidRegex.test(guid);
 };
+
+export function formatDateRange(range: DateRange) {
+  return {
+    startDate: range?.from ? dayjs(range.from).format('YYYY-MM-DD') : undefined,
+    endDate: range?.to ? dayjs(range.to).format('YYYY-MM-DD') : undefined,
+  };
+}

@@ -56,7 +56,7 @@ const UserActivityLineChart = ({ userId }: { userId: string }) => {
         <LineChart data={chartData}>
           <Legend iconType="circle" iconSize={6} verticalAlign="top" />
           <XAxis
-            dataKey="date"
+            dataKey="eventDate"
             tickLine={false}
             axisLine={false}
             tickMargin={8}
