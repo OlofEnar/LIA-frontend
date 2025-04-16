@@ -26,11 +26,12 @@ import {
 import { useSelectedUsersStore } from '../../../store';
 import { useNavigate } from 'react-router';
 import {
+  AggregatedEventData,
+  AggregatedUserData,
   InputChangeHandler,
   TableData,
   TableType,
   User,
-  UserEventTable,
 } from '../../../types/types';
 
 interface DataTableProps<TData, TValue> {
@@ -89,11 +90,11 @@ export function DataTable<TData extends TableData, TValue>({
 
   const urlPath = (tableType: TableType, row: Row<TData>) => {
     if (tableType === 'user') {
-      const user = row.original as User;
-      return `/users/${user.id}`;
+      const user = row.original as AggregatedUserData;
+      return `/users/${user.user.id}`;
     }
     if (tableType === 'event') {
-      const event = row.original as UserEventTable;
+      const event = row.original as AggregatedEventData;
       return `/events/${event.eventName}`;
     }
     return '/';

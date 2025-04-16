@@ -1,8 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { User, UserEventTable } from '../../types/types';
+import { AggregatedEventData, AggregatedUserData } from '../../types/types';
 import React, { HTMLProps } from 'react';
 
-export const userColumns: ColumnDef<User>[] = [
+export const userColumns = (
+  totalEvents?: number
+): ColumnDef<AggregatedUserData>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -28,18 +30,22 @@ export const userColumns: ColumnDef<User>[] = [
     ),
   },
   {
-    accessorKey: 'id',
+    accessorKey: 'user.id',
     header: 'ID',
     cell: (info) => info.getValue() as string,
   },
-  { accessorKey: 'userCountry', header: 'Country' },
-  { accessorKey: 'clientVersion', header: 'Client' },
-  { accessorKey: 'totalEvents', header: 'Events' },
+  { accessorKey: 'user.userCountry', header: 'Country' },
+  { accessorKey: 'user.clientVersion', header: 'Client', footer: 'Total' },
+  {
+    accessorKey: 'eventTotal',
+    header: 'Events',
+    footer: () => totalEvents,
+  },
 ];
 
 export const eventColumns = (
-  totalEvents: number
-): ColumnDef<UserEventTable>[] => [
+  totalEvents?: number
+): ColumnDef<AggregatedEventData>[] => [
   {
     id: 'select',
     header: ({ table }) => (

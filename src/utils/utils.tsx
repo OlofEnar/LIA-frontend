@@ -1,9 +1,9 @@
+import { DateRange } from 'react-day-picker';
 import {
   AggregatedEventData,
   DownloadJSONProps,
   User,
   UserEvent,
-  UserEventTable,
 } from '../types/types';
 import dayjs from 'dayjs';
 
@@ -94,7 +94,7 @@ export const getLatestEventActivity = (
 };
 
 export function calcMovingAverage(
-  data: { date?: string; eventTotal: number }[],
+  data: { eventDate?: string; eventTotal: number }[],
   windowSize: number
 ) {
   const movingAverages: { date: string; movingAverage: number }[] = [];
@@ -176,17 +176,6 @@ export const filterUsers = (
   );
 };
 
-export function convertToUserEventTable(
-  totalEvents: number,
-  data: AggregatedEventData[]
-): UserEventTable[] {
-  return data.map((event) => ({
-    ...event,
-    eventDistribution:
-      ((event.eventTotal / totalEvents) * 100).toFixed(1) + '%',
-  }));
-}
-
 export function getEventsTotal<
   T extends { eventCount?: number; eventTotal?: number }
 >(events: T[]): number {
@@ -207,3 +196,10 @@ export const isValidGuid = (guid: string): boolean => {
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
   return guidRegex.test(guid);
 };
+
+export function formatDateRange(range: DateRange) {
+  return {
+    startDate: range?.from ? dayjs(range.from).format('YYYY-MM-DD') : undefined,
+    endDate: range?.to ? dayjs(range.to).format('YYYY-MM-DD') : undefined,
+  };
+}

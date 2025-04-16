@@ -3,11 +3,10 @@ import * as Separator from '@radix-ui/react-separator';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './UserPage.module.scss';
 import { Settings2 } from 'lucide-react';
-import { getLatestUserActivity, isValidGuid } from '../../utils/utils';
+import { isValidGuid } from '../../utils/utils';
 import { useUserQuery } from '../../queries/useUserQueries';
 import { DisplayEventsByUserTable } from '../../components/table/DisplayEventsByUserTable';
 import { useEffect } from 'react';
-import { useEventsByUserIdQuery } from '../../queries/useEventQueries';
 
 const UserPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +19,6 @@ const UserPage = () => {
   }, [id, navigate]);
 
   const { data: user, error, isError, isLoading } = useUserQuery(id!);
-  const { data: userEvent } = useEventsByUserIdQuery(id!);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -28,7 +26,7 @@ const UserPage = () => {
   if (error instanceof Error && isError)
     return <div>An error occurred: {error.message}</div>;
 
-  const latestActivity: string | null = getLatestUserActivity(userEvent);
+  // const latestActivity: string | null = getLatestUserActivity(userEvent);
 
   return (
     <div className={styles.single}>
@@ -51,7 +49,7 @@ const UserPage = () => {
           </p>
           <p>
             <strong>Last active: </strong>
-            {latestActivity}
+            {/* {latestActivity} */}
           </p>
         </div>
       </div>

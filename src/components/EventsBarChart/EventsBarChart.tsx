@@ -8,13 +8,20 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { useEventsBarChart } from './useEventsBarChart';
 import { format } from 'd3-format';
+import { useAggregatedEventsByDate } from '../../queries/useEventQueries';
+import { useDateRangeStore } from '../../store';
+import { formatDateRange } from '../../utils/utils';
 
 const EventsBarChart = () => {
-  const { data: chartData, isLoading, isError, error } = useEventsBarChart();
+  const { selectedRange } = useDateRangeStore();
+  const { startDate, endDate } = formatDateRange(selectedRange);
+
+  const { data, error, isError, isLoading } = useAggregatedEventsByDate(
+    startDate,
+    endDate
+  );
   const tickFormatter = (tick: number) => format('~s')(tick).toUpperCase();
-  console.log(chartData);
 
   if (isLoading) return <div>Loading...</div>;
   if (error instanceof Error && isError)
@@ -23,7 +30,7 @@ const EventsBarChart = () => {
   return (
     <ResponsiveContainer width="100%" maxHeight={400}>
       <BarChart
-        data={chartData}
+        data={data?.aggregatedEvents}
         margin={{
           top: 5,
           right: 30,

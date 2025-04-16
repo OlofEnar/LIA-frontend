@@ -26,17 +26,24 @@ export interface AggregatedEventData {
   eventTotal: number;
   events?: UserEvent[];
   movingAverage?: number;
-}
-
-export interface AggregatedEventDetails {
-  hour: string;
-  count: number;
-}
-
-export interface UserEventTable extends AggregatedEventData {
   eventDistribution?: string;
-  avgUserDistribution?: string;
-  avgUserEventCount?: number;
+}
+
+export interface AggregatedUserData {
+  user: User;
+  eventTotal: number;
+  eventDistribution?: string;
+}
+
+export interface AggregatedResponse {
+  totalEvents?: number;
+  aggregatedEvents?: AggregatedEventData[];
+  aggregatedUsers?: AggregatedUserData[];
+}
+
+export interface AggregatedEventDetail {
+  hour: string;
+  eventCount: number;
 }
 
 export interface HubspotExport {
@@ -51,7 +58,7 @@ export interface DownloadJSONProps {
   fileName: string;
 }
 
-export type TableData = User | UserEventTable;
+export type TableData = User | AggregatedEventData;
 export type TableType = 'user' | 'event';
 
 export type DateRangePreset =
